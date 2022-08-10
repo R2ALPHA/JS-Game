@@ -1,28 +1,19 @@
 <html>
 
 <head>
-    <title> JS Games</title>
+    <title> Game Module</title>
     <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
-    <canvas id="canvas"> </canvas>
     <div class="controls">
-        <label for="animations">Choose Animations</label>
-        <select id="animations" name="animations">
-            <option value="idle">Idle</option>
-            <option value="jump">Jump</option>
-            <option value="fall">Fall</option>
-            <option value="run">Run</option>
-            <option value="dizzy">Dizzy</option>
-            <option value="sit">Sit</option>
-            <option value="roll">Roll</option>
-            <option value="bite">Bite</option>
-            <option value="ko">Ko</option>
-            <option value="getHit">GetHit</option>
+        <label for="gameModule">Choose Module</label>
+        <select id="gameModule" name="gameModule">
+            <option selected="true" disabled="disabled">Select Module</option>
+            <option value="sprite-animation">Sprite Animation</option>
         </select>
     </div>
 </body>
-<script src="./script.js"></script>
+<script src="./main.js"></script>
 
 </html>
