@@ -1,0 +1,15 @@
+body {
+    user-select: none;
+}
+
+.controls {
+    position: absolute;
+    z-index: 10;
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.controls, select, option {
+    font-size: 16px;
+}
