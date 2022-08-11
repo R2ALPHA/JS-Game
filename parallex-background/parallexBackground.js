@@ -1,81 +1,102 @@
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
+/**
+ * Handles parallex background
+ */
+var parallexBackgroundModule = (function () {
 
-const CANVAS_WIDTH = canvas.width = 800;
-const CANVAS_HEIGHT = canvas.height = 700;
+    // DOM caching
+    const canvas = document.getElementById('canvas');
+    const sliderElement = document.getElementById('slider');
+    const showGameSpeed = document.getElementById('showGameSpeed');
 
-let gameSpeed = 15;
+    const ctx = canvas.getContext('2d');
 
-const backgroundLayer1 = new Image();
-backgroundLayer1.src = "./resource/layer-1.png";
-const backgroundLayer2 = new Image();
-backgroundLayer2.src = "./resource/layer-2.png";
-const backgroundLayer3 = new Image();
-backgroundLayer3.src = "./resource/layer-3.png";
-const backgroundLayer4 = new Image();
-backgroundLayer4.src = "./resource/layer-4.png";
-const backgroundLayer5 = new Image();
-backgroundLayer5.src = "./resource/layer-5.png";
+    const CANVAS_WIDTH = canvas.width = 800;
+    const CANVAS_HEIGHT = canvas.height = 700;
 
-const slider = document.getElementById('slider');
-slider.value = gameSpeed;
+    let gameSpeed = 5;
 
-const showGameSpeed = document.getElementById('showGameSpeed');
-showGameSpeed.innerHTML = gameSpeed;
+    const layerObjects = [];
 
-slider.addEventListener('change', (event) => {
+    /**
+     * Entry point of the module. 
+     */
+    function initialize() {
 
-    gameSpeed = event.target.value;
-    showGameSpeed.innerHTML = gameSpeed;
-});
+        sliderElement.value = gameSpeed;
+        showGameSpeed.innerHTML = gameSpeed;
 
-class Layer {
-
-    constructor(image, speedModifier) {
-        this.x = 0;
-        this.y = 0;
-        this.width = 2400;
-        this.height = 700;
-        this.image = image;
-        this.speedModifier = speedModifier;
-        this.speed = gameSpeed * this.speedModifier;
+        addLayerObjects();
+        addEventListener();
+        animate();
     }
 
-    update() {
+    /**
+     * Add layer objects for parallax background
+     */
+    function addLayerObjects() {
 
-        this.speed = gameSpeed * this.speedModifier;
+        for (let index = 0; index < 5; ++index) {
+            // For parallax the foreground should move faster. 
+            // In our case all the background image are moving at a same rate but the foreground is moving faster
+            layerObjects.push(createLayerObject(index + 1, index === 4 ? 1 : 0.5));
+        }
+    }
 
-        if (this.x <= -this.width) {
-            this.x = 0;
+    /**
+     * Performs animation of background
+     */
+    function animate() {
+
+        ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+        layerObjects.forEach(object => object.drawAndUpdateLayerPosition(ctx, gameSpeed));
+
+        requestAnimationFrame(animate);
+    }
+
+    /**
+     * Attach event listener
+     */
+    function addEventListener() {
+        sliderElement.onchange = gameSpeedHandler;
+    }
+
+    /**
+     * Handles game speed input from user
+     * 
+     * @param {MouseEvent} event is the mouse event  
+     */
+    function gameSpeedHandler(event) {
+
+        if (!event) {
+            return;
         }
 
-        this.x = Math.floor(this.x - this.speed);
+        gameSpeed = event.target.value;
+        showGameSpeed.innerHTML = gameSpeed;
     }
 
-    draw() {
-        ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-        ctx.drawImage(this.image, this.x + this.width, this.y, this.width, this.height);
+    /**
+     * Create layer object to be used in parallax background 
+     * 
+     * @param {number} imageIndex is the image index 
+     * @param {number} speed is the speed at which background moves
+     *  
+     * @returns Layer  
+     */
+    function createLayerObject(imageIndex, speed) {
+
+        const backgroundLayer = new Image();
+        backgroundLayer.src = `./resource/layer-${imageIndex}.png`;
+
+        return new Layer(backgroundLayer, speed);
     }
-}
 
-const layer1 = new Layer(backgroundLayer1, 0.5);
-const layer2 = new Layer(backgroundLayer2, 0.5);
-const layer3 = new Layer(backgroundLayer3, 0.5);
-const layer4 = new Layer(backgroundLayer4, 0.5);
-const layer5 = new Layer(backgroundLayer5, 1);
+    return {
+        initialize
+    }
 
-const gameObjects = [layer1, layer2, layer3, layer4, layer5];
+})();
 
-function animate() {
 
-    ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-    gameObjects.forEach(object => {
-        object.update();
-        object.draw();
-    });
-
-    requestAnimationFrame(animate);
-}
-
-animate();
-
+parallexBackgroundModule.initialize();
