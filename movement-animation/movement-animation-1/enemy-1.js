@@ -1,7 +1,7 @@
 /**
  * Handles drawing of enemy object to canvas 
  */
-function Enemy() {
+function Enemy1() {
 
     // Calculate sprite width and sprite height to change the frame
     this.spriteWidth = 293;
@@ -25,7 +25,7 @@ function Enemy() {
  * 
  * @param {number} gameFrame is the current game frame, This is used to change sprite change speed.
  */
-Enemy.prototype.update = function (gameFrame) {
+Enemy1.prototype.update = function (gameFrame) {
 
     // Randomly update position of the sprites
     this.x += Math.random() * 3 - 1.5;
@@ -40,8 +40,10 @@ Enemy.prototype.update = function (gameFrame) {
 }
 
 /**
- * Draw enemy object to canvas
+ * Draw enemy object onto canvas 
+ * 
+ * @param {CanvasRenderingContext2D} ctx is the canvas context object
  */
-Enemy.prototype.draw = function () {
+Enemy1.prototype.draw = function (ctx) {
     ctx.drawImage(this.enemyImage, this.frame * this.spriteWidth, 0, this.spriteWidth, this.spriteHeight, this.x, this.y, this.width, this.height);
 }

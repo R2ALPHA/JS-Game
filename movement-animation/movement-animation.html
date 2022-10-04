@@ -11,10 +11,24 @@
 </head>
 
 <body>
+
+    <div class="controls">
+        <label for="movement">Movement</label>
+        <select id="movement" name="movement">
+            <option value="1" selected>Movement 1</option>
+            <option value="2">Movement 2</option>
+            <option value="3">Movement 3</option>
+        </select>
+    </div>
+
     <canvas id="canvas">
         Your browser does not support canvas, please upgrade your browser
     </canvas>
-    <script src="./enemy.js"></script>
+
+    <!-- Movement Animation One -->
+    <script src="./movement-animation-1/enemy-1.js"></script>
+    <script src="./movement-animation-1/movement-animation-1.js"></script>
+
     <script src="./movement-animation.js"></script>
 </body>
 
