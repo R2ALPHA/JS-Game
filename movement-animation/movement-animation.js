@@ -11,10 +11,13 @@ var movementAnimationModule = (function () {
     const CANVAS_WIDTH = canvas.width = 500;
     const CANVAS_HEIGHT = canvas.height = 1000;
 
-    const modulesAvailable = {
-        1: movementAnimation1Module,
-        2: movementAnimation2Module,
-        3: movementAnimation3Module
+    let numberOfEnemies = 100;
+    let gameFrame = 0;
+
+    const enemyObjects = {
+        1: Array.apply(null, Array(numberOfEnemies)).map(e => new Enemy1()),
+        2: Array.apply(null, Array(numberOfEnemies)).map(e => new Enemy2()),
+        3: Array.apply(null, Array(numberOfEnemies)).map(e => new Enemy3()),
     };
 
     const modeSelectionElement = document.getElementById('movement');
@@ -27,9 +30,8 @@ var movementAnimationModule = (function () {
      */
     function initialize() {
 
-        initializeMovementModules();
-        startAnimation(currentMode);
         addEventListener();
+        startAnimation(currentMode);
     }
 
     /**
@@ -39,44 +41,58 @@ var movementAnimationModule = (function () {
 
         modeSelectionElement.onchange = (event) => {
 
-            if (!event?.target?.value || !(event.target.value in modulesAvailable)) {
+            if (!event?.target?.value || !(event.target.value in enemyObjects)) {
                 alert(INCORRECT_MODE_MESSAGE);
                 return;
             }
 
+            gameFrame = 0;
+
+            stopAnimation();
             currentMode = event.target.value;
-            stopAllAnimation();
-            startAnimation(currentMode);
+            startAnimation();
         }
     }
 
     /**
-     * Initialize all movement modules 
+     * Animate enemies, update the postion and draw the enemy object
      */
-    function initializeMovementModules() {
+    function animateEnemies(enemyArray) {
 
-        for (const key in modulesAvailable) {
-            modulesAvailable[key].initialize(ctx, CANVAS_WIDTH, CANVAS_HEIGHT);
-        }
+        enemyArray.forEach(enemy => {
+
+            enemy.update(gameFrame, ctx);
+            enemy.draw(ctx);
+        });
     }
 
     /**
-     * Start animation 
-     * 
-     * @param {number} modeNumber is the current mode number
+     * Perform animation 
      */
-    function startAnimation(modeNumber) {
-        modulesAvailable[modeNumber].startAnimation();
+    function startAnimation() {
+
+        ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+        animateEnemies(enemyObjects[currentMode]);
+
+        gameFrame++;
+
+        animationId = requestAnimationFrame(startAnimation)
     }
 
     /**
-     * Stop all enemy animation
+     * Stop animation by cancelling the animation frame 
      */
-    function stopAllAnimation() {
+    function stopAnimation() {
 
-        for (const key in modulesAvailable) {
-            modulesAvailable[key].stopAnimation(ctx, CANVAS_WIDTH, CANVAS_HEIGHT);
+        if (animationId === null) {
+            return;
         }
+
+        ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+        cancelAnimationFrame(animationId);
+
+        animationId = null;
     }
 
     return {
