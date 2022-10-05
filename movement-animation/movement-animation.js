@@ -12,7 +12,8 @@ var movementAnimationModule = (function () {
     const CANVAS_HEIGHT = canvas.height = 1000;
 
     const modulesAvailable = {
-        1: movementAnimation1Module
+        1: movementAnimation1Module,
+        2: movementAnimation2Module
     };
 
     const modeSelectionElement = document.getElementById('movement');
