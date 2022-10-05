@@ -13,7 +13,8 @@ var movementAnimationModule = (function () {
 
     const modulesAvailable = {
         1: movementAnimation1Module,
-        2: movementAnimation2Module
+        2: movementAnimation2Module,
+        3: movementAnimation3Module
     };
 
     const modeSelectionElement = document.getElementById('movement');
