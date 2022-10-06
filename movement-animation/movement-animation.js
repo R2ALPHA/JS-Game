@@ -11,13 +11,14 @@ var movementAnimationModule = (function () {
     const CANVAS_WIDTH = canvas.width = 500;
     const CANVAS_HEIGHT = canvas.height = 1000;
 
-    let numberOfEnemies = 100;
+    let numberOfEnemies = 10;
     let gameFrame = 0;
 
     const enemyObjects = {
         1: Array.apply(null, Array(numberOfEnemies)).map(e => new Enemy1()),
         2: Array.apply(null, Array(numberOfEnemies)).map(e => new Enemy2()),
         3: Array.apply(null, Array(numberOfEnemies)).map(e => new Enemy3()),
+        4: Array.apply(null, Array(numberOfEnemies)).map(e => new Enemy4()),
     };
 
     const modeSelectionElement = document.getElementById('movement');
