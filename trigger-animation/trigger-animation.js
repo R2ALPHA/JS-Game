@@ -1,77 +1,80 @@
-const canvas = document.getElementById('canvas');
-canvas.style.cursor = 'pointer';
-const ctx = canvas.getContext('2d');
+var triggerAnimationModule = (function () {
 
-let explosions = [];
-let canvasPositions = canvas.getBoundingClientRect();
-let dpr = window.devicePixelRatio;
+    // DOM Caching
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
 
-canvas.width = 500 * dpr;
-canvas.height = 700 * dpr;
+    // Change the cursor type to pointer 
+    canvas.style.cursor = 'pointer';
 
-function Explosion(x, y) {
-    this.spriteWidth = 200;
-    this.spriteHeight = 179;
-    this.width = this.spriteWidth / 2;
-    this.height = this.spriteHeight / 2;
-    this.x = x;
-    this.y = y;
-    this.image = new Image();
-    this.image.src = './resource/boom.png';
-    this.frame = 0;
-    this.timer = 0;
-    this.angle = Math.random() * 6.2;
-    this.sound = new Audio();
-    this.sound.src = './resource/boom.wav';
-    console.log("the sound variable is ", this.sound);
-}
+    let explosions = [];
 
-Explosion.prototype.update = function () {
+    let canvasPositions = canvas.getBoundingClientRect();
 
-    if (this.frame === 0) {
-        this.sound.play();
+    // Different screen have different device pixel ratio, based on dpr we need to calculate our current mouse position
+    let dpr = window.devicePixelRatio;
+
+    canvas.width = 500 * dpr;
+    canvas.height = 700 * dpr;
+
+    /**
+     * Initialize trigger animation module 
+     */
+    function initialize() {
+
+        addEventListener();
+        animate();
     }
 
-    this.timer++;
-
-    if (this.timer % 10 === 0) {
-        this.frame++;
+    /**
+     * Add Event listener 
+     */
+    function addEventListener() {
+        window.addEventListener('click', (e) => createAnimation(e));
     }
-}
 
-Explosion.prototype.draw = function () {
-    ctx.save();
-    ctx.translate(this.x, this.y);
-    ctx.rotate(this.angle);
-    ctx.drawImage(this.image, this.frame * this.spriteWidth, 0, this.spriteWidth, this.spriteHeight, 0 - this.width / 2, 0 - this.height / 2, this.width, this.height);
-    ctx.restore();
-}
+    /**
+     * Create Animation object 
+     * 
+     * @param {MouseEvent} event is the mouse event 
+     */
+    function createAnimation(event) {
 
-window.addEventListener('click', (e) => createAnimation(e));
-// window.addEventListener('mousemove', (e) => createAnimation(e))
+        let positionX = (event.x - canvasPositions.left) * dpr;
+        let positionY = (event.y - canvasPositions.top) * dpr;
 
-function createAnimation(event) {
-    let positionX = (event.x - canvasPositions.left) * dpr;
-    let positionY = (event.y - canvasPositions.top) * dpr;
-    explosions.push(new Explosion(positionX, positionY));
-}
+        explosions.push(new Explosion(positionX, positionY));
+    }
 
-function draw() {
+    /**
+     * Draw explosion animation 
+     */
+    function draw() {
 
-    explosions.forEach(explosion => {
+        explosions.forEach(explosion => {
 
-        explosion.update();
-        explosion.draw();
-    });
+            explosion.update();
+            explosion.draw(ctx);
+        });
 
-    explosions = explosions.filter(explosion => explosion.frame <= 5);
-}
+        // We are removing the explosion object, once all the frame for an image are rendered atleast once
+        explosions = explosions.filter(explosion => explosion.frame <= 5);
+    }
 
-function animate() {
+    /**
+     * Animatae explosion 
+     */
+    function animate() {
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    draw();
-    requestAnimationFrame(animate);
-}
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        draw();
+        requestAnimationFrame(animate);
+    }
 
-animate();
+    return {
+        initialize
+    }
+
+})();
+
+triggerAnimationModule.initialize();
