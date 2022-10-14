@@ -1,0 +1,77 @@
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let ravens = [];
+let timeToNextRaven = 0;
+let ravenInterval = 500;
+let lastTime = 0;
+
+function Raven() {
+    this.spriteWidth = 271;
+    this.spriteHeight = 194;
+    this.sizeModifier = Math.random() * 0.6 - 0.4;
+    this.width = this.spriteWidth * this.sizeModifier;
+    this.height = this.spriteHeight * this.sizeModifier;
+    this.x = canvas.width;
+    this.y = Math.random() * (canvas.height - this.height);
+    this.directionX = Math.random() * 5 + 3;
+    this.directionY = Math.random() * 5 - 2.5;
+    this.markedForDeletion = false;
+    this.image = new Image();
+    this.image.src = './resource/raven.png';
+    this.frame = 0;
+    this.maxFrame = 4;
+    this.timeSinceFlap = 0;
+    this.flapInterval = 100;
+}
+
+Raven.prototype.update = function (deltaTime) {
+
+    this.x -= this.directionX;
+    this.y -= this.directionY;
+    if (this.x < -this.width) {
+        this.markedForDeletion = true;
+    }
+
+    this.timeSinceFlap += deltaTime;
+    if (this.timeSinceFlap > this.flapInterval) {
+        if (this.frame > this.maxFrame) {
+            this.frame = 0
+        } else {
+            this.frame += 1;
+        }
+        this.timeSinceFlap = 0;
+    }
+}
+
+Raven.prototype.draw = function () {
+    ctx.drawImage(this.image, this.frame * this.spriteWidth, 0, this.spriteWidth, this.spriteHeight, this.x, this.y, this.width, this.height);
+}
+
+const raven = new Raven();
+function animate(timestamp) {
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    let deltaTime = timestamp - lastTime;
+    lastTime = timestamp;
+
+    timeToNextRaven += deltaTime;
+
+    if (timeToNextRaven > ravenInterval) {
+        ravens.push(new Raven());
+        timeToNextRaven = 0;
+    }
+    [...ravens].forEach(object => {
+        object.update(deltaTime);
+        object.draw();
+    });
+
+    ravens = ravens.filter(raven => !raven.markedForDeletion);
+    requestAnimationFrame(animate);
+}
+
+
+animate(0);
