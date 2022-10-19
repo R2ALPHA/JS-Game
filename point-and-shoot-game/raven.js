@@ -1,22 +1,25 @@
 /**
  * Raven constructor 
+ * 
+ * @param {number} canvasWidth is the width of the canvas 
+ * @param {*number} canvasHeight is the height of the canvas  
  */
-function Raven() {
+function Raven(canvasWidth, canvasHeight) {
 
     // Sprite width and height
     this.spriteWidth = 271;
     this.spriteHeight = 194;
 
     // Randomly generate raven of different size (anything from -0.4 to 0.2)
-    this.sizeModifier = Math.random() * 0.6 - 0.4;
+    this.sizeModifier = Math.random() * 0.4 + 0.1;
 
     // The width and height of the image to draw
     this.width = this.spriteWidth * this.sizeModifier;
     this.height = this.spriteHeight * this.sizeModifier;
 
     // Current position of the raven (raven will move from right to left)
-    this.x = canvas.width;
-    this.y = Math.random() * (canvas.height - this.height);
+    this.x = canvasWidth
+    this.y = Math.random() * (canvasHeight - this.height);
 
     // The distance it will cover in each frame
     this.directionX = Math.random() * 5 + 3; // Anything from 3 to 8
@@ -33,6 +36,15 @@ function Raven() {
     this.maxFrame = 4;
     this.timeSinceFlap = 0;
     this.flapInterval = 100;
+
+    // Generate a random color 
+    this.randomColorArray = [Math.floor(Math.random() * 255), Math.floor(Math.random() * 255)
+        , Math.floor(Math.random() * 255)];
+    this.randomColor = 'rgb(' + this.randomColorArray.join(',') + ')';
+
+    // Store canvas width and height 
+    this.canvasWidth = canvasWidth;
+    this.canvasHeight = canvasHeight;
 }
 
 /**
@@ -42,6 +54,9 @@ function Raven() {
  */
 Raven.prototype.update = function (deltaTime) {
 
+    if (this.y < 0 || this.y > this.canvasHeight - this.height) {
+        this.directionY = - this.directionY;
+    }
     // Moving extreme left 
     this.x -= this.directionX;
     this.y -= this.directionY;
@@ -73,7 +88,12 @@ Raven.prototype.update = function (deltaTime) {
  * Draw raven object
  * 
  * @param {CanvasRenderingContext2D} ctx is canvas context
+ * @param {CanvasRenderingContext2D} collisionCtx is canvas collison context
  */
-Raven.prototype.draw = function (ctx) {
+Raven.prototype.draw = function (ctx, collisionCtx) {
+
+    collisionCtx.fillStyle = this.randomColor;
+    collisionCtx.fillRect(this.x, this.y, this.width, this.height);
+
     ctx.drawImage(this.image, this.frame * this.spriteWidth, 0, this.spriteWidth, this.spriteHeight, this.x, this.y, this.width, this.height);
 }
