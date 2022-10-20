@@ -28,6 +28,7 @@ var pointAndShootModule = (function () {
     // Interval after which a new raven will be added
     let ravenInterval = 500;
     let lastTime = 0;
+    let isGameRunning = true;
 
     let score = 0;
 
@@ -40,6 +41,9 @@ var pointAndShootModule = (function () {
     const SCORE = 'Score: ';
 
     const PIXEL_COUNT = 1;
+    const CENTER_TEXT_ALIGN = 'center';
+    const GAME_OVER_MESSAGE = 'GAME OVER : your final score is ';
+
 
     /**
      * Entry point for point and shoot module 
@@ -48,6 +52,9 @@ var pointAndShootModule = (function () {
 
         addEventListener();
         animate(0);
+        setTimeout(() => {
+            isGameRunning = false;
+        }, 10000);
     }
 
     /**
@@ -74,7 +81,7 @@ var pointAndShootModule = (function () {
     }
 
     /**
-     * Draw score object in canvas
+     * Draw score text in canvas
      */
     function drawScore() {
 
@@ -84,6 +91,18 @@ var pointAndShootModule = (function () {
         ctx.fillText(SCORE + score, CANVAS_WIDTH - 200, 75);
         ctx.fillStyle = color.SCORE_COLOR;
         ctx.fillText(SCORE + score, CANVAS_WIDTH - 195, 80);
+    }
+
+    /**
+     * Draw Game over text on canvas 
+     */
+    function drawGameOver() {
+
+        ctx.textAlign = CENTER_TEXT_ALIGN;
+        ctx.fillStyle = color.SHADOW_COLOR;
+        ctx.fillText(GAME_OVER_MESSAGE + score, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
+        ctx.fillStyle = color.SCORE_COLOR;
+        ctx.fillText(GAME_OVER_MESSAGE + score, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
     }
 
     /**
@@ -119,7 +138,7 @@ var pointAndShootModule = (function () {
         ravens = filterObjects(ravens);
         explosions = filterObjects(explosions);
 
-        requestAnimationFrame(animate);
+        isGameRunning ? requestAnimationFrame(animate) : drawGameOver();
     }
 
     /**
