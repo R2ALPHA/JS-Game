@@ -15,6 +15,9 @@ var pointAndShootModule = (function () {
 
     const CANVAS_WIDTH = collisionCanvas.width = canvas.width = window.innerWidth;
     const CANVAS_HEIGHT = collisionCanvas.height = canvas.height = window.innerHeight;
+    const MOUSE_EVENT = {
+        CLICK: 'click'
+    };
 
     let ravens = [];
     let explosions = [];
@@ -34,6 +37,9 @@ var pointAndShootModule = (function () {
     };
 
     const CANVAS_FONT = '50px Impact';
+    const SCORE = 'Score: ';
+
+    const PIXEL_COUNT = 1;
 
     /**
      * Entry point for point and shoot module 
@@ -48,13 +54,13 @@ var pointAndShootModule = (function () {
      * Attach event listener
      */
     function addEventListener() {
-        window.addEventListener('click', (event) => {
+        window.addEventListener(MOUSE_EVENT.CLICK, (event) => {
 
             const positionX = (event.x);
             const positionY = (event.y);
 
             // Get image data for 1 pixel only as of now
-            const detectPixelColor = collisionCtx.getImageData(positionX, positionY, 1, 1).data;
+            const detectPixelColor = collisionCtx.getImageData(positionX, positionY, PIXEL_COUNT, PIXEL_COUNT)?.data ?? [0, 0, 0, 0];
             ravens.forEach(raven => {
                 if (raven.randomColorArray[0] === detectPixelColor[0] && raven.randomColorArray[1] === detectPixelColor[1] &&
                     raven.randomColorArray[2] === detectPixelColor[2]
@@ -75,9 +81,9 @@ var pointAndShootModule = (function () {
         ctx.font = CANVAS_FONT;
 
         ctx.fillStyle = color.SHADOW_COLOR;
-        ctx.fillText('Score: ' + score, CANVAS_WIDTH - 200, 75);
+        ctx.fillText(SCORE + score, CANVAS_WIDTH - 200, 75);
         ctx.fillStyle = color.SCORE_COLOR;
-        ctx.fillText('Score: ' + score, CANVAS_WIDTH - 195, 80);
+        ctx.fillText(SCORE + score, CANVAS_WIDTH - 195, 80);
     }
 
     /**
@@ -106,22 +112,39 @@ var pointAndShootModule = (function () {
             ravens.sort((a, b) => a.width - b.width);
         }
 
-        // Draw and update the coordinate of raven 
-        [...ravens].forEach(object => {
+        // Draw and update raven and explosion object
+        drawAndUpdateObjects(ravens, deltaTime);
+        drawAndUpdateObjects(explosions, deltaTime);
+
+        ravens = filterObjects(ravens);
+        explosions = filterObjects(explosions);
+
+        requestAnimationFrame(animate);
+    }
+
+    /**
+     * Draw and update objects
+     * 
+     * @param {array} objects is an array of object 
+     * @param {number} deltaTime is the time since last animation ran 
+     */
+    function drawAndUpdateObjects(objects, deltaTime) {
+
+        [...objects].forEach(object => {
             object.update(deltaTime);
             object.draw(ctx, collisionCtx);
         });
+    }
 
-        [...explosions].forEach(explosion => {
-            explosion.update(deltaTime);
-            explosion.draw(ctx);
-        });
-
-        // Remove the raven which are marked for deletion 
-        ravens = ravens.filter(raven => !raven.markedForDeletion);
-        explosions = explosions.filter(explosions => !explosions.markedForDeletion);
-
-        requestAnimationFrame(animate);
+    /**
+     * Filter/Remove object which are marke for deletion
+     * 
+     * @param {array} objects is an array of object 
+     * 
+     * @returns filtered object 
+     */
+    function filterObjects(objects) {
+        return objects.filter(object => !object.markedForDeletion);
     }
 
     return {
