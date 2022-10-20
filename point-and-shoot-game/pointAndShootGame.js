@@ -5,6 +5,9 @@ var pointAndShootModule = (function () {
 
     // DOM Caching
     const canvas = document.getElementById('foregroundCanvas');
+
+    // The below comment will tell vs code that this is the canvas project, it will suggest us methods related to vs code only
+    /** @type {HTMLCanvasElement} */
     const ctx = canvas.getContext('2d');
 
     const collisionCanvas = document.getElementById('collisionCanvas');
@@ -14,6 +17,7 @@ var pointAndShootModule = (function () {
     const CANVAS_HEIGHT = collisionCanvas.height = canvas.height = window.innerHeight;
 
     let ravens = [];
+    let explosions = [];
 
     // Time left before next raven arrival 
     let timeToNextRaven = 0;
@@ -40,6 +44,9 @@ var pointAndShootModule = (function () {
         animate(0);
     }
 
+    /**
+     * Attach event listener
+     */
     function addEventListener() {
         window.addEventListener('click', (event) => {
 
@@ -54,6 +61,7 @@ var pointAndShootModule = (function () {
                 ) {
                     raven.markedForDeletion = true;
                     score++;
+                    explosions.push(new Explosion(raven.x, raven.y, raven.width));
                 }
             });
         });
@@ -104,9 +112,15 @@ var pointAndShootModule = (function () {
             object.draw(ctx, collisionCtx);
         });
 
+        [...explosions].forEach(explosion => {
+            explosion.update(deltaTime);
+            explosion.draw(ctx);
+        });
 
         // Remove the raven which are marked for deletion 
         ravens = ravens.filter(raven => !raven.markedForDeletion);
+        explosions = explosions.filter(explosions => !explosions.markedForDeletion);
+
         requestAnimationFrame(animate);
     }
 
