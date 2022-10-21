@@ -45,6 +45,9 @@ function Raven(canvasWidth, canvasHeight) {
     // Store canvas width and height 
     this.canvasWidth = canvasWidth;
     this.canvasHeight = canvasHeight;
+
+    // Store's raven particle // There is a problem with this as soon as raven disapper the particles also disappear
+    this.particles = [];
 }
 
 /**
@@ -81,7 +84,13 @@ Raven.prototype.update = function (deltaTime) {
 
         // Reset timesice flap
         this.timeSinceFlap = 0;
+
+        // For each frame, create a new frame
+        this.particles.push(new Particle(this.x + this.width / 2, this.y + this.height / 2, this.width, this.randomColor));
     }
+
+    this.particles = this.particles.filter(particle => !particle.markedForDeletion);
+    this.particles.forEach(particle => particle.update());
 }
 
 /**
@@ -96,4 +105,6 @@ Raven.prototype.draw = function (ctx, collisionCtx) {
     collisionCtx.fillRect(this.x, this.y, this.width, this.height);
 
     ctx.drawImage(this.image, this.frame * this.spriteWidth, 0, this.spriteWidth, this.spriteHeight, this.x, this.y, this.width, this.height);
+
+    this.particles.forEach(particle => particle.draw(ctx));
 }
