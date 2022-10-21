@@ -43,7 +43,14 @@ var pointAndShootModule = (function () {
     const PIXEL_COUNT = 1;
     const CENTER_TEXT_ALIGN = 'center';
     const GAME_OVER_MESSAGE = 'GAME OVER : your final score is ';
+    const restartButton = document.getElementById('restart');
 
+    const display = {
+        SHOW: 'block',
+        HIDE: 'none'
+    };
+
+    const GAME_TIME = 10000;
 
     /**
      * Entry point for point and shoot module 
@@ -52,31 +59,35 @@ var pointAndShootModule = (function () {
 
         addEventListener();
         animate(0);
-        setTimeout(() => {
-            isGameRunning = false;
-        }, 10000);
+        setTimeout(() => stopGame(), GAME_TIME);
     }
 
     /**
      * Attach event listener
      */
     function addEventListener() {
-        window.addEventListener(MOUSE_EVENT.CLICK, (event) => {
 
-            const positionX = (event.x);
-            const positionY = (event.y);
+        window.addEventListener(MOUSE_EVENT.CLICK, mouseClickHandler);
+        restartButton.onclick = playAgain;
+    }
 
-            // Get image data for 1 pixel only as of now
-            const detectPixelColor = collisionCtx.getImageData(positionX, positionY, PIXEL_COUNT, PIXEL_COUNT)?.data ?? [0, 0, 0, 0];
-            ravens.forEach(raven => {
-                if (raven.randomColorArray[0] === detectPixelColor[0] && raven.randomColorArray[1] === detectPixelColor[1] &&
-                    raven.randomColorArray[2] === detectPixelColor[2]
-                ) {
-                    raven.markedForDeletion = true;
-                    score++;
-                    explosions.push(new Explosion(raven.x, raven.y, raven.width));
-                }
-            });
+    /**
+     * Window's mouse click handler
+     * 
+     * @param {MouseEvent} event is the mouse event 
+     */
+    function mouseClickHandler(event) {
+
+        // Get image data for 1 pixel only as of now
+        const detectPixelColor = collisionCtx.getImageData(event.x, event.y, PIXEL_COUNT, PIXEL_COUNT)?.data ?? [0, 0, 0, 0];
+        ravens.forEach(raven => {
+            if (raven.randomColorArray[0] === detectPixelColor[0] && raven.randomColorArray[1] === detectPixelColor[1] &&
+                raven.randomColorArray[2] === detectPixelColor[2]
+            ) {
+                raven.markedForDeletion = true;
+                score++;
+                explosions.push(new Explosion(raven.x, raven.y, raven.width));
+            }
         });
     }
 
@@ -102,7 +113,7 @@ var pointAndShootModule = (function () {
         ctx.fillStyle = color.SHADOW_COLOR;
         ctx.fillText(GAME_OVER_MESSAGE + score, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
         ctx.fillStyle = color.SCORE_COLOR;
-        ctx.fillText(GAME_OVER_MESSAGE + score, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
+        ctx.fillText(GAME_OVER_MESSAGE + score, CANVAS_WIDTH / 2 + 5, CANVAS_HEIGHT / 2 + 5);
     }
 
     /**
@@ -164,6 +175,40 @@ var pointAndShootModule = (function () {
      */
     function filterObjects(objects) {
         return objects.filter(object => !object.markedForDeletion);
+    }
+
+    /**
+     * Stop game
+     */
+    function stopGame() {
+
+        isGameRunning = false;
+        showOrHidePlayAgainButton(display.SHOW);
+    }
+
+    /**
+     * Play again / restart game
+     */
+    function playAgain() {
+
+        ravens = [];
+        explosions = [];
+        score = 0;
+        isGameRunning = true;
+
+        showOrHidePlayAgainButton(display.HIDE);
+
+        animate(0);
+        setTimeout(() => stopGame(), GAME_TIME);
+    }
+
+    /**
+     * Toggle display of restart button 
+     * 
+     * @param {string} display is the ought to be display 
+     */
+    function showOrHidePlayAgainButton(display) {
+        restartButton.style.display = display;
     }
 
     return {
