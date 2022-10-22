@@ -12,10 +12,10 @@ function Particle(x, y, size, color) {
     this.y = y;
     this.size = size;
     this.color = color;
-    // this.markForDeletion = false;
+    this.markedForDeletion = false;
     this.speed = Math.random() * 1 + 0.5;
     this.radius = Math.random() * this.size / 20;
-    this.maxRadius = Math.random() * 20;
+    this.maxRadius = Math.random() * 5 + 10;
 }
 
 /**
@@ -25,9 +25,9 @@ Particle.prototype.update = function () {
 
     this.x += this.speed;
     this.radius += 0.2;
-    // if (this.radius > this.maxRadius) {
-    //     this.markForDeletion = true;
-    // }
+    if (this.radius > this.maxRadius) {
+        this.markedForDeletion = true;
+    }
 }
 
 /**

@@ -21,6 +21,7 @@ var pointAndShootModule = (function () {
 
     let ravens = [];
     let explosions = [];
+    let particles = [];
 
     // Time left before next raven arrival 
     let timeToNextRaven = 0;
@@ -50,7 +51,7 @@ var pointAndShootModule = (function () {
         HIDE: 'none'
     };
 
-    const GAME_TIME = 10000;
+    const GAME_TIME = 20000;
 
     /**
      * Entry point for point and shoot module 
@@ -142,10 +143,9 @@ var pointAndShootModule = (function () {
             ravens.sort((a, b) => a.width - b.width);
         }
 
-        // Draw and update raven and explosion object
-        drawAndUpdateObjects(ravens, deltaTime);
-        drawAndUpdateObjects(explosions, deltaTime);
+        drawAndUpdateObjects([...particles, ...ravens, ...explosions], deltaTime);
 
+        particles = filterObjects(particles);
         ravens = filterObjects(ravens);
         explosions = filterObjects(explosions);
 
@@ -193,6 +193,7 @@ var pointAndShootModule = (function () {
 
         ravens = [];
         explosions = [];
+        particles = [];
         score = 0;
         isGameRunning = true;
 
@@ -211,8 +212,18 @@ var pointAndShootModule = (function () {
         restartButton.style.display = display;
     }
 
+    /**
+     * Add particle objects 
+     * 
+     * @param {Particle} particle is particle object 
+     */
+    function addParticle(particle) {
+        particles.push(particle);
+    }
+
     return {
-        initialize
+        initialize,
+        addParticle
     }
 
 })();
