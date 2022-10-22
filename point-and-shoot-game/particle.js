@@ -15,7 +15,8 @@ function Particle(x, y, size, color) {
     this.markedForDeletion = false;
     this.speed = Math.random() * 1 + 0.5;
     this.radius = Math.random() * this.size / 20;
-    this.maxRadius = Math.random() * 5 + 10;
+    this.maxRadius = Math.random() * 20 + 20;
+    this.radiusIncreaseBy = 0.3;
 }
 
 /**
@@ -24,8 +25,8 @@ function Particle(x, y, size, color) {
 Particle.prototype.update = function () {
 
     this.x += this.speed;
-    this.radius += 0.2;
-    if (this.radius > this.maxRadius) {
+    this.radius += this.radiusIncreaseBy;
+    if (this.radius > this.maxRadius - 5) {
         this.markedForDeletion = true;
     }
 }
@@ -37,8 +38,11 @@ Particle.prototype.update = function () {
  */
 Particle.prototype.draw = function (ctx) {
 
+    ctx.save();
+    ctx.globalAlpha = 1 - this.radius / this.maxRadius;
     ctx.beginPath();
     ctx.fillStyle = this.color;
     ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
     ctx.fill();
+    ctx.restore();
 }

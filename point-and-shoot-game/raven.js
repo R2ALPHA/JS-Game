@@ -45,6 +45,10 @@ function Raven(canvasWidth, canvasHeight) {
     // Store canvas width and height 
     this.canvasWidth = canvasWidth;
     this.canvasHeight = canvasHeight;
+
+    // For 50% of the raven we will show trail
+    this.hasTrail = Math.random() > 0.5;
+    this.maxNumberOfParticle = 5;
 }
 
 /**
@@ -59,7 +63,7 @@ Raven.prototype.update = function (deltaTime) {
     }
     // Moving extreme left 
     this.x -= this.directionX;
-    this.y -= this.directionY;
+    this.y += this.directionY;
 
     // if crossed the extreme left postion, mark it for deletion
     if (this.x < -this.width) {
@@ -82,7 +86,11 @@ Raven.prototype.update = function (deltaTime) {
         // Reset timesice flap
         this.timeSinceFlap = 0;
 
-        pointAndShootModule.addParticle(new Particle(this.x + this.width / 2, this.y + this.height / 2, this.width, this.randomColor));
+        if (this.hasTrail) {
+            for (let index = 0; index < this.maxNumberOfParticle; ++index) {
+                pointAndShootModule.addParticle(new Particle(this.x + this.width / 2, this.y + this.height / 2, this.width, this.randomColor));
+            }
+        }
     }
 }
 
