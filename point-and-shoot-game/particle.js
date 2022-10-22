@@ -8,9 +8,9 @@
  */
 function Particle(x, y, size, color) {
 
-    this.x = x;
-    this.y = y;
     this.size = size;
+    this.x = x + this.size / 2;
+    this.y = y
     this.color = color;
     this.markedForDeletion = false;
     this.speed = Math.random() * 1 + 0.5;
