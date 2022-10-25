@@ -16,40 +16,59 @@ var slideScrollerModule = (function () {
     const input = new InputHandler();
     const player = new Player(CANVAS_WIDTH, CANVAS_HEIGHT, playerImage);
     const background = new Background(CANVAS_WIDTH, CANVAS_HEIGHT, backgroundImage);
-    const enemies = [];
-    enemies.push(new Enemy(CANVAS_WIDTH, CANVAS_HEIGHT, enemyImage));
+    let enemies = [];
+
+    let lastTime = 0;
+    let enemyTimer = 0;
+    let enemyInterval = 2000;
+    let randomEnemyInterval = Math.random() * 1000 + 500;
 
     /**
      * Main entry point for slide scroller module
      */
     function initialize() {
-        animate();
+        animate(0);
     }
 
     /**
      * Handle enemies
      */
-    function handleEnemies() {
+    function handleEnemies(deltaTime) {
+
+        if (enemyTimer > enemyInterval + randomEnemyInterval) {
+            enemies.push(new Enemy(CANVAS_WIDTH, CANVAS_HEIGHT, enemyImage));
+            enemyTimer = 0;
+            randomEnemyInterval = Math.random() * 1000 + 500;
+        } else {
+            enemyTimer += deltaTime;
+        }
 
         enemies.forEach(enemy => {
-            enemy.update();
+            enemy.update(deltaTime);
             enemy.draw(ctx);
         });
+
+        enemies = enemies.filter(enemy => !enemy.markForDeletion);
     }
 
     /**
      * Animate object in canvas
+     * 
+     * @param {number} timeStamp is time since animation started
      */
-    function animate() {
+    function animate(timeStamp) {
 
         ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+        const deltaTime = timeStamp - lastTime;
+        lastTime = timeStamp;
 
         background.update();
         background.draw(ctx);
         player.draw(ctx);
-        player.update(input);
+        player.update(input, deltaTime);
 
-        handleEnemies();
+        handleEnemies(deltaTime);
         requestAnimationFrame(animate);
     }
 

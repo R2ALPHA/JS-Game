@@ -21,6 +21,11 @@ class Player {
         this.speed = 5;
         this.vy = 0;
         this.weight = 1;
+
+        this.maxFrame = 8; // Initially our player will be in the ground only 
+        this.fps = 20;
+        this.frameInterval = 1000 / this.fps;
+        this.frameTimer = 0;
     }
 
     /**
@@ -38,11 +43,13 @@ class Player {
      * Update player coordinate and speed 
      * 
      * @param {InputHandler} input is the input handler object 
+     * @param {number} deltaTime is the time interval between 2 request animation frame 
      */
-    update(input) {
+    update(input, deltaTime) {
 
         this.setHorizontalSpeed(input);
         this.setVerticalSpeed(input);
+        this.spriteAnimation(deltaTime);
 
         this.x += this.speed;
         this.y += this.vy;
@@ -51,6 +58,21 @@ class Player {
             this.x = this.gameWidth - this.width;
         } else if (this.x < 0) {
             this.x = 0;
+        }
+    }
+
+    /**
+     * Handles sprite animation of player
+     * 
+     * @param {number} deltaTime is the time interval between request frames
+     */
+    spriteAnimation(deltaTime) {
+
+        if (this.frameTimer > this.frameInterval) {
+            this.frameX = this.frameX >= this.maxFrame ? 0 : this.frameX + 1;
+            this.frameTimer = 0;
+        } else {
+            this.frameTimer += deltaTime;
         }
     }
 
@@ -79,10 +101,14 @@ class Player {
 
         if (input.isContainsKey(input.arrowType.up) && this.isPlayerOnGround()) {
             this.vy = -32;
+            this.frameY = 1;
+            this.maxFrame = 6;
         } else if (!this.isPlayerOnGround()) {
             this.vy += this.weight;
         } else {
             this.vy = 0;
+            this.frameY = 0;
+            this.maxFrame = 8;
         }
     }
 

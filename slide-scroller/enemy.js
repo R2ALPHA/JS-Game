@@ -17,14 +17,42 @@ class Enemy {
         this.x = this.gameWidth;
         this.y = this.gameHeight - this.height;
         this.frameX = 0;
-        this.speed = 1;
+        this.speed = 8;
+        this.maxFrame = 5;
+        this.fps = 20;
+        this.frameInterval = 1000 / this.fps;
+        this.frameTimer = 0;
+        this.markForDeletion = false;
     }
 
     /**
      * Update enemy position/coordinate
+     * 
+     * @param {number} deltaTime is the delta time between two request animation frame loop
      */
-    update() {
-        this.x--;
+    update(deltaTime) {
+
+        this.spriteAnimation(deltaTime);
+        this.x -= this.speed;
+
+        if (this.x < -this.width) {
+            this.markForDeletion = true;
+        }
+    }
+
+    /**
+     * Handles sprite animation of player
+     * 
+     * @param {number} deltaTime is the time interval between request frames
+     */
+    spriteAnimation(deltaTime) {
+
+        if (this.frameTimer > this.frameInterval) {
+            this.frameX = this.frameX >= this.maxFrame ? 0 : this.frameX + 1;
+            this.frameTimer = 0;
+        } else {
+            this.frameTimer += deltaTime;
+        }
     }
 
     /**
