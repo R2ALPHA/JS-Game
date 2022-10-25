@@ -16,13 +16,25 @@ var slideScrollerModule = (function () {
     const input = new InputHandler();
     const player = new Player(CANVAS_WIDTH, CANVAS_HEIGHT, playerImage);
     const background = new Background(CANVAS_WIDTH, CANVAS_HEIGHT, backgroundImage);
-
+    const enemies = [];
+    enemies.push(new Enemy(CANVAS_WIDTH, CANVAS_HEIGHT, enemyImage));
 
     /**
      * Main entry point for slide scroller module
      */
     function initialize() {
         animate();
+    }
+
+    /**
+     * Handle enemies
+     */
+    function handleEnemies() {
+
+        enemies.forEach(enemy => {
+            enemy.update();
+            enemy.draw(ctx);
+        });
     }
 
     /**
@@ -36,6 +48,8 @@ var slideScrollerModule = (function () {
         background.draw(ctx);
         player.draw(ctx);
         player.update(input);
+
+        handleEnemies();
         requestAnimationFrame(animate);
     }
 
