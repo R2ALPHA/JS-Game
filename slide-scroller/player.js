@@ -44,9 +44,14 @@ class Player {
         this.setHorizontalSpeed(input);
         this.setVerticalSpeed(input);
 
-
         this.x += this.speed;
         this.y += this.vy;
+
+        if (this.x + this.width > this.gameWidth) {
+            this.x = this.gameWidth - this.width;
+        } else if (this.x < 0) {
+            this.x = 0;
+        }
     }
 
     /**

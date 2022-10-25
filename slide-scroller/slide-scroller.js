@@ -15,6 +15,7 @@ var slideScrollerModule = (function () {
 
     const input = new InputHandler();
     const player = new Player(CANVAS_WIDTH, CANVAS_HEIGHT, playerImage);
+    const background = new Background(CANVAS_WIDTH, CANVAS_HEIGHT, backgroundImage);
 
 
     /**
@@ -24,11 +25,15 @@ var slideScrollerModule = (function () {
         animate();
     }
 
-
+    /**
+     * Animate object in canvas
+     */
     function animate() {
 
         ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
+        background.update();
+        background.draw(ctx);
         player.draw(ctx);
         player.update(input);
         requestAnimationFrame(animate);
