@@ -23,6 +23,7 @@ class Enemy {
         this.frameInterval = 1000 / this.fps;
         this.frameTimer = 0;
         this.markForDeletion = false;
+        this.radius = this.width / 2 - this.width / 20;
     }
 
     /**
@@ -61,6 +62,10 @@ class Enemy {
      * @param {CanvasRenderingContext2D} context is the canvas context 
      */
     draw(context) {
+        context.strokeStyle = 'white';
+        context.beginPath();
+        context.arc(this.x + this.width / 2, this.y + this.height / 2, this.radius, 0, Math.PI * 2);
+        context.stroke();
         context.drawImage(this.enemyImage, this.frameX * this.width, 0, this.width, this.height, this.x, this.y, this.width, this.height);
     }
 }
