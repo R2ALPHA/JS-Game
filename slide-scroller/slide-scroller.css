@@ -14,3 +14,17 @@ body  {
 img {
     display: none;
 }
+
+#startGame{
+    width: 40px;
+    height: 40px;
+    z-index: 11;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid white;
+    /* border-radius: 50%; */
+    /* display: none; */
+    cursor: pointer;
+}

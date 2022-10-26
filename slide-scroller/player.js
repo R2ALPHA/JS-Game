@@ -38,10 +38,6 @@ class Player {
      */
     draw(context) {
 
-        context.strokeStyle = 'white';
-        context.beginPath();
-        context.arc(this.x + this.width / 2, this.y + this.height / 2, this.radius, 0, Math.PI * 2);
-        context.stroke();
         context.fillStyle = 'white';
         context.drawImage(this.playerImage, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
     }

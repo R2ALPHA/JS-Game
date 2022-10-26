@@ -8,6 +8,7 @@ var slideScrollerModule = (function () {
     const playerImage = document.getElementById('playerImage');
     const backgroundImage = document.getElementById('backgroundImage');
     const enemyImage = document.getElementById('enemyImage');
+    const startGameButton = document.getElementById('startGame');
 
     const ctx = canvas.getContext('2d');
     const CANVAS_WIDTH = canvas.width = 800;
@@ -26,25 +27,60 @@ var slideScrollerModule = (function () {
 
     const SCORE = 'Score : ';
     const GAME_OVER = 'Game over : Your final score is ';
+    const START_GAME = 'JUMP $ ROLL ';
+
     const color = {
         TEXT_SHADOW_COLOR: '#000000',
-        TEXT_COLOR: '#FFFFFF'
+        TEXT_COLOR: '#FFFFFF',
+        RED_SHADOW_COLOR: '#FF0000'
     };
 
     const font = {
-        SCORE_FONT: '40px Helvetica'
+        SCORE_FONT: '40px Helvetica',
+        GAME_START_FONT: '60px Arial'
     };
 
     const SHADOW_BUFFER = 2;
+
+    let gameOver = false;
+    let gameStarted = false;
+
+    // https://opengameart.org/content/jump-and-run-8-bit
+    const gameSound = new Audio();
+    gameSound.src = './resource/game_song.ogg';
+
+    const explosionSound = new Audio();
+    explosionSound.src = './resource/boom.wav';
+
+    const dummyEnemy = new Enemy(CANVAS_WIDTH, CANVAS_HEIGHT, enemyImage);
 
     /**
      * Main entry point for slide scroller module
      */
     function initialize() {
+
+        addEventListener();
         animate(0);
     }
 
-    let gameOver = false;
+    /**
+     * Attach event listener
+     */
+    function addEventListener() {
+        startGameButton.onclick = startGame;
+    }
+
+    /**
+     * Start Game 
+     */
+    function startGame() {
+
+        gameSound.loop = true;
+        gameSound.play();
+        gameStarted = true;
+
+        startGameButton.style.display = 'none';
+    }
 
     /**
      * Handle enemies
@@ -82,6 +118,39 @@ var slideScrollerModule = (function () {
         const deltaTime = timeStamp - lastTime;
         lastTime = timeStamp;
 
+        !gameStarted && animateBefore(deltaTime);
+        gameStarted && animateAfter(deltaTime);
+    }
+
+    /**
+     * Handles animation when game has not yet started 
+     * 
+     * @param {number} deltaTime is the difference in time between two animation frame 
+     */
+    function animateBefore(deltaTime) {
+
+        player.draw(ctx);
+        player.update(input, deltaTime);
+
+        dummyEnemy.update(deltaTime);
+        dummyEnemy.draw(ctx);
+
+        if (isCollisionDetected([dummyEnemy]) || dummyEnemy.getX() < 0) {
+            dummyEnemy.setX(CANVAS_WIDTH + dummyEnemy.width);
+        }
+
+        displayGameStartText();
+
+        requestAnimationFrame(animate);
+    }
+
+    /**
+     * Handles animation for cases when game has started 
+     * 
+     * @param {number} deltaTime is the difference in time between two animation frame 
+     */
+    function animateAfter(deltaTime) {
+
         background.update();
         background.draw(ctx);
         player.draw(ctx);
@@ -91,8 +160,10 @@ var slideScrollerModule = (function () {
 
         handleEnemies(deltaTime);
 
-        if (isCollisionDetected()) {
+        if (isCollisionDetected(enemies)) {
             gameOver = true;
+            gameSound.pause();
+            explosionSound.play();
         }
 
         gameOver && displayGameOverText();
@@ -101,8 +172,10 @@ var slideScrollerModule = (function () {
 
     /**
      * Returns whether collision has happened between enemy and player or not
+     * 
+     * @param {array} enemies is an array of enemy
      */
-    function isCollisionDetected() {
+    function isCollisionDetected(enemies) {
 
         return enemies.some(enemy => {
             const distance = getLengthOfLine({ x: player.x + player.width / 2 - player.speed, y: player.y + player.height / 2 - player.vy },
@@ -125,6 +198,18 @@ var slideScrollerModule = (function () {
         const dy = point2.y - point1.y;
 
         return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    /**
+     * Display game start text to the canvas
+     */
+    function displayGameStartText() {
+
+        ctx.font = font.GAME_START_FONT;
+        ctx.fillStyle = color.RED_SHADOW_COLOR;
+        ctx.fillText(START_GAME, CANVAS_WIDTH / 2 - 200, CANVAS_HEIGHT / 2 - 80);
+        ctx.fillStyle = color.TEXT_COLOR;
+        ctx.fillText(START_GAME, CANVAS_WIDTH / 2 - 200 + SHADOW_BUFFER + 1, CANVAS_HEIGHT / 2 - 80 + SHADOW_BUFFER + 1);
     }
 
     /**

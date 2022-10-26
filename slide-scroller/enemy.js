@@ -62,10 +62,40 @@ class Enemy {
      * @param {CanvasRenderingContext2D} context is the canvas context 
      */
     draw(context) {
+
         context.strokeStyle = 'white';
-        context.beginPath();
-        context.arc(this.x + this.width / 2, this.y + this.height / 2, this.radius, 0, Math.PI * 2);
-        context.stroke();
         context.drawImage(this.enemyImage, this.frameX * this.width, 0, this.width, this.height, this.x, this.y, this.width, this.height);
+    }
+
+    /**
+     * Set enemy x coordinate
+     * 
+     * @param {number} xPos is the x coordinate  
+     */
+    setX(xPos) {
+        this.x = xPos;
+    }
+
+    /**
+     * Returns x coordinate
+     */
+    getX() {
+        return this.x;
+    }
+
+    /**
+     * Set enemy y coordinate
+     * 
+     * @param {number} yPos is the coordinate along y axis where we need to place enemy 
+     */
+    setY(yPos) {
+        this.yPos = yPos;
+    }
+
+    /**
+     * Returns y coordinate
+     */
+    getY() {
+        return this.y;
     }
 }
