@@ -8,6 +8,7 @@ var slideScrollerModule = (function () {
     const playerImage = document.getElementById('playerImage');
     const backgroundImage = document.getElementById('backgroundImage');
     const enemyImage = document.getElementById('enemyImage');
+    const coinImage = document.getElementById('coinImage');
     const startGameButton = document.getElementById('startGame');
 
     const ctx = canvas.getContext('2d');
@@ -17,12 +18,19 @@ var slideScrollerModule = (function () {
     const input = new InputHandler();
     const player = new Player(CANVAS_WIDTH, CANVAS_HEIGHT, playerImage);
     const background = new Background(CANVAS_WIDTH, CANVAS_HEIGHT, backgroundImage);
+    // const coin = new Coin(CANVAS_WIDTH, CANVAS_HEIGHT, coinImage);
     let enemies = [];
+    let coins = [];
 
     let lastTime = 0;
     let enemyTimer = 0;
     let enemyInterval = 2000;
     let randomEnemyInterval = Math.random() * 1000 + 500;
+
+    let coinTimer = 0;
+    let coinInterval = 1000;
+    let randomCoinInterval = Math.random() * 1000;
+
     let score = 0;
 
     const SCORE = 'Score : ';
@@ -49,10 +57,15 @@ var slideScrollerModule = (function () {
     const gameSound = new Audio();
     gameSound.src = './resource/game_song.ogg';
 
+    // https://opengameart.org/content/coin-sound-effect-harmonica
+    const coinSound = new Audio();
+    coinSound.src = './resource/coin.mp3';
+
     const explosionSound = new Audio();
     explosionSound.src = './resource/boom.wav';
 
     const dummyEnemy = new Enemy(CANVAS_WIDTH, CANVAS_HEIGHT, enemyImage);
+    let dummyCoin = new Coin(CANVAS_WIDTH, CANVAS_HEIGHT, coinImage);
 
     /**
      * Main entry point for slide scroller module
@@ -100,10 +113,37 @@ var slideScrollerModule = (function () {
             enemy.draw(ctx);
         });
 
-        const prevEnemiesLength = enemies.length;
         enemies = enemies.filter(enemy => !enemy.markForDeletion);
-        const currentEnemiesLength = enemies.length;
-        score += prevEnemiesLength - currentEnemiesLength;
+    }
+
+    /**
+     * Handle coins
+     * 
+     * @param {number} deltaTime is the time difference between two animation frame requests 
+     */
+    function handleCoins(deltaTime) {
+
+        if (coinTimer > coinInterval + randomCoinInterval) {
+            coins.push(new Coin(CANVAS_WIDTH, CANVAS_HEIGHT, coinImage));
+            coinTimer = 0;
+            randomCoinInterval = Math.random() * 1000 + 500;
+        } else {
+            coinTimer += deltaTime;
+        }
+
+        coins.forEach(coin => {
+            coin.update(deltaTime);
+            coin.draw(ctx);
+        });
+
+        const cointHitIndex = getCollisionHitIndex(coins);
+        if (cointHitIndex !== -1) {
+            score++;
+            coins[cointHitIndex].markForDeletion = true;
+            coinSound.play();
+        }
+
+        coins = coins.filter(coin => !coin.markForDeletion);
     }
 
     /**
@@ -135,8 +175,15 @@ var slideScrollerModule = (function () {
         dummyEnemy.update(deltaTime);
         dummyEnemy.draw(ctx);
 
-        if (isCollisionDetected([dummyEnemy]) || dummyEnemy.getX() < 0) {
+        dummyCoin.update(deltaTime);
+        dummyCoin.draw(ctx);
+
+        if (getCollisionHitIndex([dummyEnemy]) !== -1 || dummyEnemy.getX() < 0) {
             dummyEnemy.setX(CANVAS_WIDTH + dummyEnemy.width);
+        }
+
+        if (getCollisionHitIndex([dummyCoin]) !== -1 || dummyCoin.getX() < 0) {
+            dummyCoin = new Coin(CANVAS_WIDTH, CANVAS_HEIGHT, coinImage);
         }
 
         displayGameStartText();
@@ -159,8 +206,9 @@ var slideScrollerModule = (function () {
         displayStatusText();
 
         handleEnemies(deltaTime);
+        handleCoins(deltaTime);
 
-        if (isCollisionDetected(enemies)) {
+        if (getCollisionHitIndex(enemies) !== -1) {
             gameOver = true;
             gameSound.pause();
             explosionSound.play();
@@ -175,9 +223,9 @@ var slideScrollerModule = (function () {
      * 
      * @param {array} enemies is an array of enemy
      */
-    function isCollisionDetected(enemies) {
+    function getCollisionHitIndex(enemies) {
 
-        return enemies.some(enemy => {
+        return enemies.findIndex(enemy => {
             const distance = getLengthOfLine({ x: player.x + player.width / 2 - player.speed, y: player.y + player.height / 2 - player.vy },
                 { x: enemy.x + enemy.width / 2, y: enemy.y + enemy.height / 2 });
             return distance <= enemy.radius + player.radius;
