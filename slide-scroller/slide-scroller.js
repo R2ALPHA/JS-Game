@@ -30,6 +30,10 @@ var slideScrollerModule = (function () {
     let coinInterval = 1000;
     let randomCoinInterval = Math.random() * 1000;
 
+    let speedInterval = 2000;
+    let randomSpeedInterval = Math.random() * 500;
+    let speedTimer = 0;
+
     let score = 0;
 
     const SCORE = 'Score : ';
@@ -119,6 +123,20 @@ var slideScrollerModule = (function () {
 
         startGameButton.style.display = BLOCK;
         window.removeEventListener('click', resetGame)
+    }
+
+    function handleSpeed(deltaTime) {
+
+        if (speedTimer > speedInterval + randomSpeedInterval) {
+
+            enemies.forEach(enemy => enemy.increaseSpeed());
+            coins.forEach(coin => coin.increaseSpeed());
+
+            speedTimer = 0;
+            randomSpeedInterval = Math.random() * 500;
+        } else {
+            speedTimer += deltaTime;
+        }
     }
 
     /**
@@ -233,6 +251,7 @@ var slideScrollerModule = (function () {
 
         handleEnemies(deltaTime);
         handleCoins(deltaTime);
+        handleSpeed(deltaTime);
 
         if (getCollisionHitIndex(enemies) !== -1) {
             gameOver = true;

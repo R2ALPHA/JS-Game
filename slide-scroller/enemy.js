@@ -98,4 +98,13 @@ class Enemy {
     getY() {
         return this.y;
     }
+
+    /**
+     * Increase enemy speed 
+     * 
+     * @param {number} deltaSpeed is speed to add 
+     */
+    increaseSpeed(deltaSpeed = null) {
+        this.speed += deltaSpeed != null ? deltaSpeed : Math.random() + 1;
+    }
 }
