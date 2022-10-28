@@ -72,7 +72,11 @@ class Player {
     spriteAnimation(deltaTime) {
 
         if (this.frameTimer > this.frameInterval) {
-            this.frameX = this.frameX >= this.maxFrame ? 0 : this.frameX + 1;
+            if (this.speed >= 0) {
+                this.frameX = this.frameX >= this.maxFrame ? 0 : this.frameX + 1;
+            } else {
+                this.frameX = this.frameX <= 0 ? this.maxFrame - 1 : this.frameX - 1;
+            }
             this.frameTimer = 0;
         } else {
             this.frameTimer += deltaTime;
