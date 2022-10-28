@@ -86,9 +86,9 @@ class Player {
      */
     setHorizontalSpeed(input) {
 
-        if (input.isContainsKey(input.arrowType.right)) {
+        if (input.isContainsKey(input.arrowType.right) || input.isContainsKey(input.arrowType.swipeRight)) {
             this.speed = 5;
-        } else if (input.isContainsKey(input.arrowType.left)) {
+        } else if (input.isContainsKey(input.arrowType.left) || input.isContainsKey(input.arrowType.swipeLeft)) {
             this.speed = -5;
         } else {
             this.speed = 0;
@@ -102,7 +102,7 @@ class Player {
      */
     setVerticalSpeed(input) {
 
-        if (input.isContainsKey(input.arrowType.up) && this.isPlayerOnGround()) {
+        if ((input.isContainsKey(input.arrowType.up) || input.isContainsKey(input.arrowType.swipeUp)) && this.isPlayerOnGround()) {
             this.vy = -32;
             this.frameY = 1;
             this.maxFrame = 6;

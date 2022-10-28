@@ -37,7 +37,7 @@ var slideScrollerModule = (function () {
     const START_GAME = 'JUMP $ ROLL ';
     const BLOCK = 'block';
     const NONE = 'none';
-    const GO_TO_START = 'Please click on screen, to go to start page';
+    const GO_TO_START = 'Press Enter or Swipe Up to go to start page';
 
     const color = {
         TEXT_SHADOW_COLOR: '#000000',
@@ -98,16 +98,13 @@ var slideScrollerModule = (function () {
     }
 
     /**
-     * Go to loanding animation 
-     */
-    function goToLandingAnimation() {
-        window.addEventListener('click', resetGame);
-    }
-
-    /**
      * Reset Game
      */
     function resetGame() {
+
+        if (!gameOver) {
+            return;
+        }
 
         gameStarted = false;
         gameOver = false;
@@ -241,7 +238,6 @@ var slideScrollerModule = (function () {
             gameOver = true;
             gameSound.pause();
             explosionSound.play();
-            goToLandingAnimation();
         }
 
         gameOver && displayGameOverText();
@@ -319,7 +315,8 @@ var slideScrollerModule = (function () {
     }
 
     return {
-        initialize
+        initialize,
+        resetGame
     }
 
 })();
