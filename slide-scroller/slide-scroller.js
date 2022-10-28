@@ -44,17 +44,14 @@ var slideScrollerModule = (function () {
     const GO_TO_START = 'Press Enter or Swipe Up to go to start page';
 
     const color = {
-        TEXT_SHADOW_COLOR: '#000000',
-        TEXT_COLOR: '#FF0000',
-        RED_SHADOW_COLOR: '#FF0000'
+        STROKE_COLOR: '#000000',
+        FILL_COLOR: '#FFFFFF',
     };
 
     const font = {
-        SCORE_FONT: '40px Helvetica',
-        GAME_START_FONT: '60px Arial'
+        SCORE_FONT: '40px Impact',
+        GAME_START_FONT: '100px Impact'
     };
-
-    const SHADOW_BUFFER = 2;
 
     let gameOver = false;
     let gameStarted = false;
@@ -72,6 +69,11 @@ var slideScrollerModule = (function () {
 
     const dummyEnemy = new Enemy(CANVAS_WIDTH, CANVAS_HEIGHT, enemyImage);
     let dummyCoin = new Coin(CANVAS_WIDTH, CANVAS_HEIGHT, coinImage);
+
+    const align = {
+        LEFT: 'left',
+        CENTER: 'center'
+    };
 
     /**
      * Main entry point for slide scroller module
@@ -299,10 +301,11 @@ var slideScrollerModule = (function () {
     function displayGameStartText() {
 
         ctx.font = font.GAME_START_FONT;
-        ctx.fillStyle = color.RED_SHADOW_COLOR;
-        ctx.fillText(START_GAME, CANVAS_WIDTH / 2 - 200, CANVAS_HEIGHT / 2 - 80);
-        ctx.fillStyle = color.TEXT_COLOR;
-        ctx.fillText(START_GAME, CANVAS_WIDTH / 2 - 200 + SHADOW_BUFFER + 1, CANVAS_HEIGHT / 2 - 80 + SHADOW_BUFFER + 1);
+        ctx.textAlign = align.CENTER;
+        ctx.fillStyle = color.FILL_COLOR;
+        ctx.fillText(START_GAME, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 80);
+        ctx.strokeStyle = color.STROKE_COLOR;
+        ctx.stroke();
     }
 
     /**
@@ -311,10 +314,11 @@ var slideScrollerModule = (function () {
     function displayStatusText() {
 
         ctx.font = font.SCORE_FONT;
-        ctx.fillStyle = color.TEXT_SHADOW_COLOR;
-        ctx.fillText(SCORE + score, 20, 50);
-        ctx.fillStyle = color.TEXT_COLOR;
-        ctx.fillText(SCORE + score, 20 + SHADOW_BUFFER, 52 + SHADOW_BUFFER);
+        ctx.textAlign = align.LEFT;
+        ctx.fillStyle = color.FILL_COLOR;
+        ctx.fillText(SCORE + score, 20, 52);
+        ctx.strokeStyle = color.STROKE_COLOR;
+        ctx.stroke();
     }
 
     /**
@@ -322,15 +326,12 @@ var slideScrollerModule = (function () {
      */
     function displayGameOverText() {
 
-        ctx.fillStyle = color.TEXT_SHADOW_COLOR;
-        ctx.fillText(GAME_OVER + score, CANVAS_WIDTH / 2 - 300, CANVAS_HEIGHT / 2 - 100);
-        ctx.fillStyle = color.TEXT_COLOR;
-        ctx.fillText(GAME_OVER + score, CANVAS_WIDTH / 2 - 300 + SHADOW_BUFFER, CANVAS_HEIGHT / 2 + SHADOW_BUFFER - 100);
-
-        ctx.fillStyle = color.TEXT_SHADOW_COLOR;
-        ctx.fillText(GO_TO_START, CANVAS_WIDTH / 2 - 380, CANVAS_HEIGHT / 2);
-        ctx.fillStyle = color.TEXT_COLOR;
-        ctx.fillText(GO_TO_START, CANVAS_WIDTH / 2 - 380 + SHADOW_BUFFER, CANVAS_HEIGHT / 2 + SHADOW_BUFFER);
+        ctx.textAlign = align.CENTER;
+        ctx.fillStyle = color.FILL_COLOR;
+        ctx.fillText(GAME_OVER + score, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2 - 100);
+        ctx.fillText(GO_TO_START, CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2);
+        ctx.strokeStyle = color.STROKE_COLOR;
+        ctx.stroke();
     }
 
     return {
