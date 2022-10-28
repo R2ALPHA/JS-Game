@@ -16,9 +16,8 @@ var slideScrollerModule = (function () {
     const CANVAS_HEIGHT = canvas.height = 720;
 
     const input = new InputHandler();
-    const player = new Player(CANVAS_WIDTH, CANVAS_HEIGHT, playerImage);
-    const background = new Background(CANVAS_WIDTH, CANVAS_HEIGHT, backgroundImage);
-    // const coin = new Coin(CANVAS_WIDTH, CANVAS_HEIGHT, coinImage);
+    let player = new Player(CANVAS_WIDTH, CANVAS_HEIGHT, playerImage);
+    let background = new Background(CANVAS_WIDTH, CANVAS_HEIGHT, backgroundImage);
     let enemies = [];
     let coins = [];
 
@@ -36,10 +35,13 @@ var slideScrollerModule = (function () {
     const SCORE = 'Score : ';
     const GAME_OVER = 'Game over : Your final score is ';
     const START_GAME = 'JUMP $ ROLL ';
+    const BLOCK = 'block';
+    const NONE = 'none';
+    const GO_TO_START = 'Please click on screen, to go to start page';
 
     const color = {
         TEXT_SHADOW_COLOR: '#000000',
-        TEXT_COLOR: '#FFFFFF',
+        TEXT_COLOR: '#FF0000',
         RED_SHADOW_COLOR: '#FF0000'
     };
 
@@ -92,7 +94,34 @@ var slideScrollerModule = (function () {
         gameSound.play();
         gameStarted = true;
 
-        startGameButton.style.display = 'none';
+        startGameButton.style.display = NONE;
+    }
+
+    /**
+     * Go to loanding animation 
+     */
+    function goToLandingAnimation() {
+        window.addEventListener('click', resetGame);
+    }
+
+    /**
+     * Reset Game
+     */
+    function resetGame() {
+
+        gameStarted = false;
+        gameOver = false;
+        score = 0;
+        coins = [];
+        enemies = [];
+
+        player = new Player(CANVAS_WIDTH, CANVAS_HEIGHT, playerImage);
+        background = new Background(CANVAS_WIDTH, CANVAS_HEIGHT, backgroundImage);
+
+        animate(0);
+
+        startGameButton.style.display = BLOCK;
+        window.removeEventListener('click', resetGame)
     }
 
     /**
@@ -212,6 +241,7 @@ var slideScrollerModule = (function () {
             gameOver = true;
             gameSound.pause();
             explosionSound.play();
+            goToLandingAnimation();
         }
 
         gameOver && displayGameOverText();
@@ -278,9 +308,14 @@ var slideScrollerModule = (function () {
     function displayGameOverText() {
 
         ctx.fillStyle = color.TEXT_SHADOW_COLOR;
-        ctx.fillText(GAME_OVER + score, CANVAS_WIDTH / 2 - 300, CANVAS_HEIGHT / 2);
+        ctx.fillText(GAME_OVER + score, CANVAS_WIDTH / 2 - 300, CANVAS_HEIGHT / 2 - 100);
         ctx.fillStyle = color.TEXT_COLOR;
-        ctx.fillText(GAME_OVER + score, CANVAS_WIDTH / 2 - 300 + SHADOW_BUFFER, CANVAS_HEIGHT / 2 + SHADOW_BUFFER);
+        ctx.fillText(GAME_OVER + score, CANVAS_WIDTH / 2 - 300 + SHADOW_BUFFER, CANVAS_HEIGHT / 2 + SHADOW_BUFFER - 100);
+
+        ctx.fillStyle = color.TEXT_SHADOW_COLOR;
+        ctx.fillText(GO_TO_START, CANVAS_WIDTH / 2 - 380, CANVAS_HEIGHT / 2);
+        ctx.fillStyle = color.TEXT_COLOR;
+        ctx.fillText(GO_TO_START, CANVAS_WIDTH / 2 - 380 + SHADOW_BUFFER, CANVAS_HEIGHT / 2 + SHADOW_BUFFER);
     }
 
     return {
