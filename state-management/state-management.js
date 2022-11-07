@@ -1,4 +1,5 @@
 import Player from './player.js';
+import State from './state.js';
 import InputHandler from './input-handler.js';
 import { drawStatusText } from './util.js';
 
@@ -40,7 +41,7 @@ var stateManagementModule = (function () {
 
         clearCanvas();
         animatePlayer();
-        drawStatusText(ctx, inputHandler);
+        drawStatusText(ctx, inputHandler, State.getStateInReadableFormat(player.currentState.state));
         requestAnimationFrame(animate);
     }
 

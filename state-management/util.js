@@ -3,9 +3,11 @@
  * 
  * @param {CanvasRenderingContext2D} context is the canvas context 2d 
  * @param {InputHandler} input is the input handler object 
+ * @param {string} state is the current actice state of player 
  */
-export function drawStatusText(context, input) {
+export function drawStatusText(context, input, state) {
 
-    context.font = '30px Helvetica';
-    context.fillText('Last input: ' + input.lastKey, 20, 50);
+    context.font = '20px Helvetica';
+    context.fillText('Last input: ' + (input.lastKey.trim() === "" ? 'N/A' : input.lastKey), 20, 50);
+    context.fillText('Active state: ' + state, 20, 80);
 }

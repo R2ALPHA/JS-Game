@@ -1,10 +1,14 @@
 export const arrowKey = {
     LEFT: "ArrowLeft",
-    RIGHT: "ArrowRight"
+    RIGHT: "ArrowRight",
+    UP: "ArrowUp",
+    DOWN: "ArrowDown"
 };
 
 export const LEFT = " left";
 export const RIGHT = " right";
+export const UP = " up";
+export const DOWN = " down";
 
 export const action = {
     PRESS: "PRESS",
@@ -25,6 +29,10 @@ export default class InputHandler {
                 case arrowKey.LEFT: this.lastKey = type + LEFT;
                     break;
                 case arrowKey.RIGHT: this.lastKey = type + RIGHT;
+                    break;
+                case arrowKey.UP: this.lastKey = type + UP;
+                    break;
+                case arrowKey.DOWN: this.lastKey = type + DOWN;
                     break;
             }
         };
