@@ -1,4 +1,4 @@
-import { JumpingLeft, JumpingRight, RunningLeft, RunningRight, SittingLeft, SittingRight, StandingLeft, StandingRight } from "./state.js";
+import { FallingLeft, FallingRight, JumpingLeft, JumpingRight, RunningLeft, RunningRight, SittingLeft, SittingRight, StandingLeft, StandingRight } from "./state.js";
 
 /**
  * Player class 
@@ -8,7 +8,19 @@ export default class Player {
 
         this.gameWidth = gameWidth;
         this.gameHeight = gameHeight;
-        this.states = [new StandingLeft(this), new StandingRight(this), new SittingLeft(this), new SittingRight(this), new RunningLeft(this), new RunningRight(this), new JumpingLeft(this), new JumpingRight(this)];
+        this.states = [
+            new StandingLeft(this),
+            new StandingRight(this),
+            new SittingLeft(this),
+            new SittingRight(this),
+            new RunningLeft(this),
+            new RunningRight(this),
+            new JumpingLeft(this),
+            new JumpingRight(this),
+            new FallingLeft(this),
+            new FallingRight(this)
+        ];
+
         // By default our player is standing toward right
         this.currentState = this.states[1];
         this.image = image;

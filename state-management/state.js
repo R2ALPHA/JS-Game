@@ -12,7 +12,9 @@ export const states = {
     RUNNING_LEFT: 4,
     RUNNING_RIGHT: 5,
     JUMPING_LEFT: 6,
-    JUMPING_RIGHT: 7
+    JUMPING_RIGHT: 7,
+    FALLING_LEFT: 8,
+    FALLING_RIGHT: 9
 };
 
 /**
@@ -215,6 +217,8 @@ export class JumpingLeft extends State {
             this.player.setState(states.JUMPING_RIGHT);
         } else if (this.player.onGround()) {
             this.player.setState(states.STANDING_LEFT);
+        } else if (this.player.vy > 0) {
+            this.player.setState(states.FALLING_LEFT);
         }
     }
 }
@@ -241,6 +245,50 @@ export class JumpingRight extends State {
 
         if (input === action.PRESS + LEFT) {
             this.player.setState(states.JUMPING_LEFT);
+        } else if (this.player.onGround()) {
+            this.player.setState(states.STANDING_RIGHT);
+        } else if (this.player.vy > 0) {
+            this.player.setState(states.FALLING_RIGHT);
+        }
+    }
+}
+
+export class FallingLeft extends State {
+
+    constructor(player) {
+        super(states.FALLING_LEFT);
+        this.player = player;
+    }
+
+    enter() {
+        this.player.frameY = 5;
+    }
+
+    handleInput(input) {
+
+        if (input === action.PRESS + RIGHT) {
+            this.player.setState(states.FALLING_RIGHT);
+        } else if (this.player.onGround()) {
+            this.player.setState(states.STANDING_LEFT);
+        }
+    }
+}
+
+export class FallingRight extends State {
+
+    constructor(player) {
+        super(states.FALLING_RIGHT);
+        this.player = player;
+    }
+
+    enter() {
+        this.player.frameY = 4;
+    }
+
+    handleInput(input) {
+
+        if (input === action.PRESS + LEFT) {
+            this.player.setState(states.FALLING_LEFT);
         } else if (this.player.onGround()) {
             this.player.setState(states.STANDING_RIGHT);
         }
