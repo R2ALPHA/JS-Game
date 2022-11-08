@@ -8,7 +8,9 @@ export const states = {
     STANDING_LEFT: 0,
     STANDING_RIGHT: 1,
     SITTING_LEFT: 2,
-    SITTING_RIGHT: 3
+    SITTING_RIGHT: 3,
+    RUNNING_LEFT: 4,
+    RUNNING_RIGHT: 5
 };
 
 /**
@@ -19,14 +21,9 @@ export default class State {
     constructor(state) {
         this.state = state;
     }
-    static getStateInReadableFormat(state) {
 
-        switch (state) {
-            case 0: return Object.keys(states)[0];
-            case 1: return Object.keys(states)[1];
-            case 2: return Object.keys(states)[2];
-            case 3: return Object.keys(states)[3];
-        }
+    static getStateInReadableFormat(state) {
+        return Object.keys(states)[state];
     }
 }
 
@@ -46,9 +43,11 @@ export class StandingLeft extends State {
 
     handleInput(input) {
         if (input === action.PRESS + RIGHT) {
-            this.player.setState(states.STANDING_RIGHT);
+            this.player.setState(states.RUNNING_RIGHT);
         } else if (input === action.PRESS + DOWN) {
             this.player.setState(states.SITTING_LEFT)
+        } else if (input === action.PRESS + LEFT) {
+            this.player.setState(states.RUNNING_LEFT);
         }
     }
 }
@@ -69,9 +68,11 @@ export class StandingRight extends State {
 
     handleInput(input) {
         if (input === action.PRESS + LEFT) {
-            this.player.setState(states.STANDING_LEFT);
+            this.player.setState(states.RUNNING_LEFT);
         } else if (input === action.PRESS + DOWN) {
             this.player.setState(states.SITTING_RIGHT);
+        } else if (input == action.PRESS + RIGHT) {
+            this.player.setState(states.RUNNING_RIGHT);
         }
     }
 }
@@ -94,6 +95,8 @@ export class SittingLeft extends State {
         if (input === action.PRESS + RIGHT) {
             this.player.setState(states.SITTING_RIGHT);
         } else if (input === action.PRESS + UP) {
+            this.player.setState(states.STANDING_LEFT);
+        } else if (input === action.RELEASE + DOWN) {
             this.player.setState(states.STANDING_LEFT);
         }
     }
@@ -118,6 +121,52 @@ export class SittingRight extends State {
             this.player.setState(states.SITTING_LEFT);
         } else if (input === action.PRESS + UP) {
             this.player.setState(states.STANDING_RIGHT)
+        } else if (input === action.RELEASE + DOWN) {
+            this.player.setState(states.STANDING_RIGHT);
+        }
+    }
+}
+
+export class RunningLeft extends State {
+
+    constructor(player) {
+        super(states.RUNNING_LEFT);
+        this.player = player;
+    }
+
+    enter() {
+        this.player.frameY = 7;
+    }
+
+    handleInput(input) {
+        if (input === action.PRESS + RIGHT) {
+            this.player.setState(states.RUNNING_RIGHT);
+        } else if (input === action.RELEASE + LEFT) {
+            this.player.setState(states.STANDING_LEFT)
+        } else if (input === action.PRESS + DOWN) {
+            this.player.setState(states.SITTING_LEFT);
+        }
+    }
+}
+
+export class RunningRight extends State {
+
+    constructor(player) {
+        super(states.RUNNING_RIGHT);
+        this.player = player;
+    }
+
+    enter() {
+        this.player.frameY = 6;
+    }
+
+    handleInput(input) {
+        if (input === action.PRESS + LEFT) {
+            this.player.setState(states.RUNNING_RIGHT);
+        } else if (input === action.PRESS + DOWN) {
+            this.player.setState(states.SITTING_RIGHT)
+        } else if (input === action.RELEASE + RIGHT) {
+            this.player.setState(states.STANDING_RIGHT);
         }
     }
 }
