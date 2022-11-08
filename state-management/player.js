@@ -33,6 +33,7 @@ export default class Player {
         // Track frame to show
         this.frameX = 0;
         this.frameY = 0;
+        this.maxFrame = 6;
         this.speed = 0;
         this.maxSpeed = 10;
         this.vy = 0;
@@ -45,6 +46,8 @@ export default class Player {
      * @param {CanvasRenderingContext2D} context is the canvas context
      */
     draw(context) {
+
+        this.frameX = this.frameX < this.maxFrame ? this.frameX + 1 : 0;
         context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
     }
 
