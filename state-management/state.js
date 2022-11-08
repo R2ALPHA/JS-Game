@@ -10,7 +10,9 @@ export const states = {
     SITTING_LEFT: 2,
     SITTING_RIGHT: 3,
     RUNNING_LEFT: 4,
-    RUNNING_RIGHT: 5
+    RUNNING_RIGHT: 5,
+    JUMPING_LEFT: 6,
+    JUMPING_RIGHT: 7
 };
 
 /**
@@ -38,16 +40,21 @@ export class StandingLeft extends State {
         this.player = player;
     }
     enter() {
+
         this.player.frameY = 1;
+        this.player.speed = 0;
     }
 
     handleInput(input) {
+
         if (input === action.PRESS + RIGHT) {
             this.player.setState(states.RUNNING_RIGHT);
         } else if (input === action.PRESS + DOWN) {
             this.player.setState(states.SITTING_LEFT)
         } else if (input === action.PRESS + LEFT) {
             this.player.setState(states.RUNNING_LEFT);
+        } else if (input === action.PRESS + UP) {
+            this.player.setState(states.JUMPING_LEFT);
         }
     }
 }
@@ -63,16 +70,21 @@ export class StandingRight extends State {
     }
 
     enter() {
+
         this.player.frameY = 0;
+        this.player.speed = 0;
     }
 
     handleInput(input) {
+
         if (input === action.PRESS + LEFT) {
             this.player.setState(states.RUNNING_LEFT);
         } else if (input === action.PRESS + DOWN) {
             this.player.setState(states.SITTING_RIGHT);
-        } else if (input == action.PRESS + RIGHT) {
+        } else if (input === action.PRESS + RIGHT) {
             this.player.setState(states.RUNNING_RIGHT);
+        } else if (input === action.PRESS + UP) {
+            this.player.setState(states.JUMPING_RIGHT);
         }
     }
 }
@@ -88,7 +100,9 @@ export class SittingLeft extends State {
     }
 
     enter() {
+
         this.player.frameY = 9;
+        this.player.speed = 0;
     }
 
     handleInput(input) {
@@ -113,7 +127,9 @@ export class SittingRight extends State {
     }
 
     enter() {
+
         this.player.frameY = 8;
+        this.player.speed = 0;
     }
 
     handleInput(input) {
@@ -135,7 +151,9 @@ export class RunningLeft extends State {
     }
 
     enter() {
+
         this.player.frameY = 7;
+        this.player.speed = -this.player.maxSpeed;
     }
 
     handleInput(input) {
@@ -157,7 +175,9 @@ export class RunningRight extends State {
     }
 
     enter() {
+
         this.player.frameY = 6;
+        this.player.speed = this.player.maxSpeed;
     }
 
     handleInput(input) {
@@ -166,6 +186,62 @@ export class RunningRight extends State {
         } else if (input === action.PRESS + DOWN) {
             this.player.setState(states.SITTING_RIGHT)
         } else if (input === action.RELEASE + RIGHT) {
+            this.player.setState(states.STANDING_RIGHT);
+        }
+    }
+}
+
+export class JumpingLeft extends State {
+
+    constructor(player) {
+        super(states.JUMPING_LEFT);
+        this.player = player;
+    }
+
+    enter() {
+
+        this.player.frameY = 3;
+
+        if (this.player.onGround()) {
+            this.player.vy -= 20;
+        }
+
+        this.player.speed = -this.player.maxSpeed * 0.5;
+    }
+
+    handleInput(input) {
+
+        if (input === action.PRESS + RIGHT) {
+            this.player.setState(states.JUMPING_RIGHT);
+        } else if (this.player.onGround()) {
+            this.player.setState(states.STANDING_LEFT);
+        }
+    }
+}
+
+export class JumpingRight extends State {
+
+    constructor(player) {
+        super(states.JUMPING_RIGHT);
+        this.player = player;
+    }
+
+    enter() {
+
+        this.player.frameY = 2;
+
+        if (this.player.onGround()) {
+            this.player.vy -= 20;
+        }
+
+        this.player.speed = this.player.maxSpeed * 0.5;
+    }
+
+    handleInput(input) {
+
+        if (input === action.PRESS + LEFT) {
+            this.player.setState(states.JUMPING_LEFT);
+        } else if (this.player.onGround()) {
             this.player.setState(states.STANDING_RIGHT);
         }
     }
