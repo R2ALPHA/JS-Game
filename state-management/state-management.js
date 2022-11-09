@@ -17,6 +17,7 @@ var stateManagementModule = (function () {
 
     const player = new Player(CANVAS_WIDTH, CANAVS_HEIGHT, dogImageElement);
     const inputHandler = new InputHandler();
+    let lastTime = 0;
 
     /**
      * Initalize state management module
@@ -37,21 +38,26 @@ var stateManagementModule = (function () {
     /**
      * Animation loop
      */
-    function animate() {
+    function animate(timeStamp) {
+
+        const deltaTime = timeStamp - lastTime;
+        lastTime = timeStamp;
 
         clearCanvas();
-        animatePlayer();
+        animatePlayer(deltaTime);
         drawStatusText(ctx, inputHandler, State.getStateInReadableFormat(player.currentState.state));
         requestAnimationFrame(animate);
     }
 
     /**
      * Animate game player
+     * 
+     * @param {number} is the time between two rendering frame
      */
-    function animatePlayer() {
+    function animatePlayer(deltaTime) {
 
         player.update(inputHandler.lastKey);
-        player.draw(ctx);
+        player.draw(ctx, deltaTime);
     }
 
     /**

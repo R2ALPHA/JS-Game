@@ -38,16 +38,26 @@ export default class Player {
         this.maxSpeed = 10;
         this.vy = 0;
         this.weight = 0.5;
+        this.fps = 60;
+        this.frameTimer = 0;
+        this.frameInterval = 1000 / this.fps;
     }
 
     /**
      * Draw player object 
      * 
      * @param {CanvasRenderingContext2D} context is the canvas context
+     * @param {number} deltaTime is the time between two frame
      */
-    draw(context) {
+    draw(context, deltaTime) {
 
-        this.frameX = this.frameX < this.maxFrame ? this.frameX + 1 : 0;
+        if (this.frameTimer > this.frameInterval) {
+            this.frameX = this.frameX < this.maxFrame ? this.frameX + 1 : 0;
+            this.frameTimer = 0;
+        } else {
+            this.frameTimer += deltaTime;
+        }
+
         context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
     }
 
