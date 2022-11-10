@@ -8,6 +8,7 @@ window.addEventListener('load', () => {
     const ctx = canvas.getContext('2d');
     const CANVAS_WIDTH = canvas.width = 500;
     const CANVAS_HEIGHT = canvas.height = 500;
+    let lastTime = 0;
 
     class Game {
         constructor(width, height) {
@@ -18,8 +19,8 @@ window.addEventListener('load', () => {
             this.input = new InputHandler(this);
         }
 
-        update() {
-            this.player.update(this.input);
+        update(deltaTime) {
+            this.player.update(this.input, deltaTime);
         }
 
         draw(context) {
@@ -29,10 +30,13 @@ window.addEventListener('load', () => {
 
     const game = new Game(CANVAS_WIDTH, CANVAS_HEIGHT);
 
-    function animate(deltaTime) {
+    function animate(timeStamp) {
+
+        const deltaTime = timeStamp - lastTime;
+        lastTime = timeStamp;
 
         clearCanvas();
-        game.update();
+        game.update(deltaTime);
         game.draw(ctx);
         requestAnimationFrame(animate);
     }
