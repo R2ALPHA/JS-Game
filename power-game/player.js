@@ -7,7 +7,7 @@ export default class Player {
         this.width = 100;
         this.height = 91.3;
         this.x = 0;
-        this.y = this.game.height - this.height;
+        this.y = this.game.height - this.height - this.game.groundMargin;
         this.vy = 0;
         this.weight = 1;
         this.image = document.getElementById('player');
@@ -23,7 +23,6 @@ export default class Player {
 
         this.fps = 10;
         this.frameInterval = 1000 / this.fps;
-        console.log("The frame interval is", this.frameInterval);
         this.frameTimer = 0;
     }
 
@@ -74,7 +73,7 @@ export default class Player {
     }
 
     onGround() {
-        return this.y >= this.game.height - this.height;
+        return this.y >= this.game.height - this.height - this.game.groundMargin;
     }
 
     setState(state) {
