@@ -13,7 +13,7 @@ export default class Player {
         this.image = document.getElementById('player');
         this.frameX = 0;
         this.frameY = 0;
-        this.speed = 0;
+        this.speed = 4;
         this.maxSpeed = 10;
         this.maxFrame = 4;
 
@@ -76,9 +76,10 @@ export default class Player {
         return this.y >= this.game.height - this.height - this.game.groundMargin;
     }
 
-    setState(state) {
+    setState(state, speed) {
 
         this.currentState = this.states[state];
+        this.game.speed = this.game.maxSpeed * speed;
         this.currentState.enter();
     }
 
