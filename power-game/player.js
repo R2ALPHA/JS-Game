@@ -69,6 +69,10 @@ export default class Player {
      * @param {CanvasRenderingContext2D} context is canvas context
      */
     draw(context) {
+
+        if (this.game.debug) {
+            context.strokeRect(this.x, this.y, this.width, this.height);
+        }
         context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
     }
 
@@ -82,5 +86,4 @@ export default class Player {
         this.game.speed = this.game.maxSpeed * speed;
         this.currentState.enter();
     }
-
 }

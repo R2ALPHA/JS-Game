@@ -15,12 +15,13 @@ export default class InputHandler {
     /**
      * Constructor
      */
-    constructor() {
+    constructor(game) {
 
         this.keys = [];
         this.touchY = 0;
         this.touchX = 0;
         this.touchThreshold = 50;
+        this.game = game;
 
         const isElementInArray = (element, array) => array.indexOf(element) !== -1;
 
@@ -28,6 +29,8 @@ export default class InputHandler {
 
             if (this.isKeyPressed(event.key) && !isElementInArray(event.key, this.keys)) {
                 this.keys.push(event.key);
+            } else if (event.key === 'd') {
+                this.game.debug = !this.game.debug;
             }
         };
 
