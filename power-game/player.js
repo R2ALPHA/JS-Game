@@ -1,4 +1,4 @@
-import { Falling, Jumping, Rolling, Running, Sitting } from "./state.js";
+import { Diving, Falling, Jumping, Rolling, Running, Sitting } from "./state.js";
 export default class Player {
 
     constructor(game) {
@@ -22,7 +22,8 @@ export default class Player {
             new Running(this.game),
             new Jumping(this.game),
             new Falling(this.game),
-            new Rolling(this.game)
+            new Rolling(this.game),
+            new Diving(this.game)
         ];
 
         this.fps = 10;
@@ -39,6 +40,7 @@ export default class Player {
         this.checkCollision();
         this.currentState.handleInput(input);
 
+        // Horizontal Movement
         this.x += this.speed;
         if (input.isContainsKey(input.keyTypes.right)) {
             this.speed = this.maxSpeed;
@@ -48,8 +50,10 @@ export default class Player {
             this.speed = 0;
         }
 
+        // Horizontal boundaries
         this.x = this.x < 0 ? 0 : (this.x > this.game.width - this.width) ? this.game.width - this.width : this.x;
 
+        // Vertical movement
         this.y += this.vy;
 
         if (!this.onGround()) {
@@ -58,6 +62,8 @@ export default class Player {
             this.vy = 0;
         }
 
+        // Vertical boundaries
+        this.y = this.y > this.game.height - this.height - this.game.groundMargin ? this.game.height - this.height - this.game.groundMargin : this.y;
         if (this.frameTimer > this.frameInterval) {
             // Sprite animation
             this.frameX = this.frameX < this.maxFrame ? this.frameX + 1 : 0;
