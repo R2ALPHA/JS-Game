@@ -30,6 +30,7 @@ window.addEventListener('load', () => {
             this.enemyTimer = 0;
             this.enemyInterval = 1000;
             this.score = 0;
+            this.maxParticles = 200;
 
             this.player.currentState = this.player.states[0];
             this.player.currentState.enter();
@@ -61,6 +62,9 @@ window.addEventListener('load', () => {
                     this.particles.splice(index, 1);
                 }
             });
+            if (this.particles.length > this.maxParticles) {
+                this.particles = this.particles.slice(0, this.maxParticles);
+            }
         }
 
         draw(context) {

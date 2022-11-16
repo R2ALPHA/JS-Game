@@ -1,4 +1,4 @@
-import { Dust } from './particles.js';
+import { Dust, Fire } from './particles.js';
 
 const states = {
     SITTING: 0,
@@ -60,7 +60,7 @@ export class Running extends State {
 
     handleInput(input) {
 
-        this.game.particles.push(new Dust(this.game, this.game.player.x + this.game.player.width * 0.5, this.game.player.y + this.game.player.height));
+        this.game.particles.unshift(new Dust(this.game, this.game.player.x + this.game.player.width * 0.5, this.game.player.y + this.game.player.height));
 
         if (input.isContainsKey(input.keyTypes.down)) {
             this.game.player.setState(states.SITTING, 0);
@@ -134,6 +134,8 @@ export class Rolling extends State {
     }
 
     handleInput(input) {
+        this.game.particles.unshift(new Fire(this.game, this.game.player.x + this.game.player.width * 0.5, this.game.player.y + this.game.player.height * 0.5));
+
         if (!input.isContainsKey(input.keyTypes.enter) && this.game.player.onGround()) {
             this.game.player.setState(states.RUNNING, 1);
         } else if (!input.isContainsKey(input.keyTypes.enter) && !this.game.player.onGround()) {
