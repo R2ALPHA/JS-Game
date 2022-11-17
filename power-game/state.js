@@ -1,6 +1,6 @@
 import { Dust, Fire, Splash } from './particles.js';
 
-const states = {
+export const states = {
     SITTING: 0,
     RUNNING: 1,
     JUMPING: 2,
@@ -176,6 +176,30 @@ export class Diving extends State {
             }
         } else if (input.isContainsKey(input.keyTypes.enter) && this.game.player.onGround()) {
             this.game.player.setState(states.ROLLING, 2);
+        }
+    }
+}
+
+export class Hit extends State {
+
+    constructor(game) {
+        super(states.HIT, game);
+    }
+
+    enter() {
+
+        this.game.player.frameX = 0;
+        this.game.player.frameY = 4;
+        this.game.player.maxFrame = 10;
+        this.game.player.vy = 15;
+    }
+
+    handleInput(input) {
+
+        if (this.game.player.frameX >= 10 && this.game.player.onGround()) {
+            this.game.player.setState(states.RUNNING, 1);
+        } else if (this.game.player.frameX >= 10 && !this.game.player.onGround()) {
+            this.game.player.setState(states.FALLING, 1);
         }
     }
 }

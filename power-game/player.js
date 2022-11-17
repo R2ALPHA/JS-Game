@@ -1,4 +1,4 @@
-import { Diving, Falling, Jumping, Rolling, Running, Sitting } from "./state.js";
+import { Diving, Falling, Jumping, Rolling, Running, Sitting, Hit, states } from "./state.js";
 export default class Player {
 
     constructor(game) {
@@ -23,7 +23,8 @@ export default class Player {
             new Jumping(this.game),
             new Falling(this.game),
             new Rolling(this.game),
-            new Diving(this.game)
+            new Diving(this.game),
+            new Hit(this.game)
         ];
 
         this.fps = 10;
@@ -107,9 +108,11 @@ export default class Player {
                 enemy.y + enemy.height > this.y
             ) {
                 enemy.markedForDeletion = true;
-                this.game.score++;
-            } else {
-                // no collision detected
+                if (this.currentState instanceof Rolling || this.currentState instanceof Diving) {
+                    this.game.score++;
+                } else {
+                    this.setState(states.HIT, 0);
+                }
             }
         });
     }
