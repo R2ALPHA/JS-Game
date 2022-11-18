@@ -33,12 +33,18 @@ window.addEventListener('load', () => {
             this.score = 0;
             this.maxParticles = 200;
             this.debug = false;
+            this.time = 0;
+            this.maxTime = 200000;
             this.player.currentState = this.player.states[0];
             this.player.currentState.enter();
         }
 
         update(deltaTime) {
 
+            this.time += deltaTime;
+            if (this.time > this.maxTime) {
+                this.gameOver = true;
+            }
             this.background.update();
             this.player.update(this.input, deltaTime);
             // Handle enemies 
@@ -113,7 +119,7 @@ window.addEventListener('load', () => {
         clearCanvas();
         game.update(deltaTime);
         game.draw(ctx);
-        requestAnimationFrame(animate);
+        !game.gameOver && requestAnimationFrame(animate);
     }
 
     function clearCanvas() {
