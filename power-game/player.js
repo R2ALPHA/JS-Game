@@ -44,7 +44,7 @@ export default class Player {
 
         // Horizontal Movement
         this.x += this.speed;
-        if (input.isContainsKey(input.keyTypes.right)) {
+        if (input.isContainsKey(input.keyTypes.right && !this.currentState instanceof Hit)) {
             this.speed = this.maxSpeed;
         } else if (input.isContainsKey(input.keyTypes.left)) {
             this.speed = -this.maxSpeed;
