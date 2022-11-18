@@ -27,11 +27,12 @@ window.addEventListener('load', () => {
             this.UI = new UI(this);
             this.enemies = [];
             this.particles = [];
+            this.collisions = [];
             this.enemyTimer = 0;
             this.enemyInterval = 1000;
             this.score = 0;
             this.maxParticles = 200;
-
+            this.debug = false;
             this.player.currentState = this.player.states[0];
             this.player.currentState.enter();
         }
@@ -56,6 +57,7 @@ window.addEventListener('load', () => {
                 }
             });
 
+            // Handle particles
             this.particles.forEach((particle, index) => {
                 particle.update();
                 if (particle.markedForDeletion) {
@@ -65,6 +67,14 @@ window.addEventListener('load', () => {
             if (this.particles.length > this.maxParticles) {
                 this.particles = this.particles.slice(0, this.maxParticles);
             }
+
+            // Handle collision sprites
+            this.collisions.forEach((collision, index) => {
+                collision.update(deltaTime);
+                if (collision.markedForDeletion) {
+                    this.collisions.splice(index, 1);
+                }
+            });
         }
 
         draw(context) {
@@ -72,12 +82,15 @@ window.addEventListener('load', () => {
             this.background.draw(context);
             this.player.draw(context);
             this.enemies.forEach(enemy => {
-                enemy.draw(ctx);
+                enemy.draw(context);
             });
             this.particles.forEach(particle => {
-                particle.draw(ctx);
-            })
-            this.UI.draw(ctx);
+                particle.draw(context);
+            });
+            this.collisions.forEach(collision => {
+                collision.draw(context);
+            });
+            this.UI.draw(context);
         }
 
         addEnemy() {
