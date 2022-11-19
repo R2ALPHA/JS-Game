@@ -29,6 +29,7 @@ window.addEventListener('load', () => {
             this.enemies = [];
             this.particles = [];
             this.collisions = [];
+            this.floatingMessages = [];
             this.enemyTimer = 0;
             this.enemyInterval = 1000;
             this.score = 0;
@@ -57,31 +58,36 @@ window.addEventListener('load', () => {
                 this.enemyTimer += deltaTime;
             }
 
-            this.enemies.forEach((enemy, index) => {
+            this.enemies.forEach(enemy => {
                 enemy.update(deltaTime);
-                if (enemy.markedForDeletion) {
-                    this.enemies.splice(index, 1);
-                }
             });
+
+            this.enemies = this.enemies.filter(enemy => !enemy.markedForDeletion);
 
             // Handle particles
-            this.particles.forEach((particle, index) => {
+            this.particles.forEach((particle) => {
                 particle.update();
-                if (particle.markedForDeletion) {
-                    this.particles.splice(index, 1);
-                }
             });
+
+            this.particles = this.particles.filter(particle => !particle.markedForDeletion);
+
             if (this.particles.length > this.maxParticles) {
-                this.particles = this.particles.slice(0, this.maxParticles);
+                this.particles.length = this.maxParticles;
             }
 
-            // Handle collision sprites
-            this.collisions.forEach((collision, index) => {
-                collision.update(deltaTime);
-                if (collision.markedForDeletion) {
-                    this.collisions.splice(index, 1);
-                }
+            // Handle particles
+            this.floatingMessages.forEach((message, index) => {
+                message.update();
             });
+
+            this.floatingMessages = this.floatingMessages.filter(floatingMessage => !floatingMessage.markedForDeletion);
+
+            // Handle collision sprites
+            this.collisions.forEach(collision => {
+                collision.update(deltaTime);
+            });
+            this.collisions = this.collisions.filter(collision => !collision.markedForDeletion);
+
         }
 
         draw(context) {
@@ -96,6 +102,9 @@ window.addEventListener('load', () => {
             });
             this.collisions.forEach(collision => {
                 collision.draw(context);
+            });
+            this.floatingMessages.forEach(floatingMessage => {
+                floatingMessage.draw(context);
             });
             this.UI.draw(context);
         }

@@ -1,5 +1,7 @@
 import { Diving, Falling, Jumping, Rolling, Running, Sitting, Hit, states } from "./state.js";
 import { CollisionAnimation } from "./collisionAnimation.js";
+import { FloatingMessage } from "./floatingMessages.js";
+
 export default class Player {
 
     constructor(game) {
@@ -112,6 +114,7 @@ export default class Player {
                 this.game.collisions.push(new CollisionAnimation(this.game, enemy.x + enemy.width * 0.5, enemy.y + enemy.height * 0.5));
                 if (this.currentState instanceof Rolling || this.currentState instanceof Diving) {
                     this.game.score++;
+                    this.game.floatingMessages.push(new FloatingMessage('+1', enemy.x, enemy.y, 150, 100));
                 } else {
                     this.setState(states.HIT, 0);
                     this.game.lives--;
