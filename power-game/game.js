@@ -69,7 +69,7 @@ export default class Game {
             this.enemyTimer += deltaTime;
         }
 
-        this.updateChildObjects([...this.enemies, ...this.particles, ...this.floatingMessages, ...this.collisions]);
+        this.updateChildObjects([...this.enemies, ...this.particles, ...this.floatingMessages, ...this.collisions], deltaTime);
 
         this.enemies = this.filterChildObjects(this.enemies);
         this.particles = this.filterChildObjects(this.particles);
