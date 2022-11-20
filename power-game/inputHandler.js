@@ -1,3 +1,4 @@
+/** Note :: Touch handler code has been copied from state management module, hence it is not tested */
 export default class InputHandler {
 
     keyTypes = {
