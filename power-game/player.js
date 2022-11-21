@@ -60,6 +60,7 @@ export default class Player {
 
         // Vertical movement
         this.y += this.vy;
+        this.setVerticalSpeed();
 
         // Vertical boundaries
         this.y = this.y > this.game.height - this.height - this.game.groundMargin ? this.game.height - this.height - this.game.groundMargin : this.y;

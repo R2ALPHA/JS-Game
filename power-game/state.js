@@ -1,5 +1,6 @@
 import { Dust, Fire, Splash } from './particles.js';
 
+// Enum for states 
 export const states = {
     SITTING: 0,
     RUNNING: 1,
@@ -12,7 +13,14 @@ export const states = {
 
 class State {
 
+    /**
+     * Constructor 
+     * 
+     * @param {number} state is the index of the state 
+     * @param {Game} game is the game object  
+     */
     constructor(state, game) {
+
         this.state = state;
         this.game = game;
     }
@@ -24,10 +32,18 @@ class State {
 
 export class Sitting extends State {
 
+    /**
+     * Constructor 
+     * 
+     * @param {Game} game is the game object
+     */
     constructor(game) {
         super(states.SITTING, game);
     }
 
+    /**
+     * Handles entering of a state
+     */
     enter() {
 
         this.game.player.frameX = 0;
@@ -35,6 +51,11 @@ export class Sitting extends State {
         this.game.player.maxFrame = 4;
     }
 
+    /**
+     * Handles input
+     * 
+     * @param {InputHandler} input is the input handler object 
+     */
     handleInput(input) {
 
         if (input.isContainsKey(input.keyTypes.left) || input.isContainsKey(input.keyTypes.right) || input.isContainsKey(input.keyTypes.up)) {
@@ -81,7 +102,7 @@ export class Jumping extends State {
     enter() {
 
         if (this.game.player.onGround()) {
-            this.game.player.vy -= 30;
+            this.game.player.vy -= 25;
         }
 
         this.game.player.frameX = 0;
