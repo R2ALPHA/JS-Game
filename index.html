@@ -3,11 +3,16 @@
 <head>
     <title> Game Module</title>
     <link rel="stylesheet" href="./style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Roboto:ital,wght@0,900;1,400&display=swap"
+        rel="stylesheet">
 </head>
 
 <body>
+    <div id="particles-js"></div>
+    <div id="typeWriter"></div>
     <div class="controls">
-        <label for="gameModule">Choose Module</label>
         <select id="gameModule" name="gameModule">
             <option selected="true" disabled="disabled">Select Module</option>
             <option value="sprite-animation">Sprite Animation</option>
@@ -21,6 +26,8 @@
         </select>
     </div>
 </body>
-<script src="./main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+<script src="https://unpkg.com/typewriter-effect@latest/dist/core.js"></script>
+<script type="module" src="./main.js"></script>
 
 </html>
